@@ -4,7 +4,7 @@ javacOptions ++= Seq("-source", "1.8",
 
 lazy val root = (project in file(".")).
   settings(
-    name := "stein",
+    name := "quaich",
     organization := "codes.bytes",
     version := "0.1-SNAPSHOT",
     scalaVersion := "2.11.8",
