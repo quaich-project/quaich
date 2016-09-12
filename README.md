@@ -26,6 +26,7 @@ quaich (pronounced ‘quake’) is a Scala microframework, inspired by the Pytho
 - Support for multiple pluggable JSON libraries, because Scala has about 64k of them and everyone has their own preference
 - Macro annotations like chalice's python decorates for easily defining routes
 - Variable handling in routes
+- sbt deployment plugin
 
 
 
