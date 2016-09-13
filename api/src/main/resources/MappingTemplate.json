@@ -4,7 +4,7 @@
 #set($headers = $input.params().header)
 {
   "body" : $input.json('$'),
-	"path-parameters": {
+	"pathParameters": {
 		#foreach($key in $pathParams.keySet())
 		"$key": "$util.escapeJavaScript($pathParams.get($key))"
 		#if($foreach.hasNext),#end
@@ -22,29 +22,31 @@
 		#if($foreach.hasNext),#end
 		#end
 	},
-  "stage-variables" : {
+  "stageVariables" : {
     #foreach($key in $stageVariables.keySet())
     "$key" : "$util.escapeJavaScript($stageVariables.get($key))"
       #if($foreach.hasNext),#end
     #end
   },
-  "account-id" : "$context.identity.accountId",
-  "api-id" : "$context.apiId",
-  "api-key" : "$context.identity.apiKey",
-  "authorizer-principal-id" : "$context.authorizer.principalId",
+  "accountId" : "$context.identity.accountId",
+  "apiId" : "$context.apiId",
+  "apiKey" : "$context.identity.apiKey",
+  "authorizerPrincipalId" : "$context.authorizer.principalId",
   "caller" : "$context.identity.caller",
-  "cognito-authentication-provider" : "$context.identity.cognitoAuthenticationProvider",
-  "cognito-authentication-type" : "$context.identity.cognitoAuthenticationType",
-  "cognito-identity-id" : "$context.identity.cognitoIdentityId",
-  "cognito-identity-pool-id" : "$context.identity.cognitoIdentityPoolId",
-  "http-method" : "$context.httpMethod",
+	"cognito": {
+		"authenticationProvider" : "$context.identity.cognitoAuthenticationProvider",
+		"authenticationType" : "$context.identity.cognitoAuthenticationType",
+		"identityId" : "$context.identity.cognitoIdentityId",
+		"identityPoolId" : "$context.identity.cognitoIdentityPoolId"
+	},
+  "httpMethod" : "$context.httpMethod",
   "stage" : "$context.stage",
-  "source-ip" : "$context.identity.sourceIp",
+  "sourceIp" : "$context.identity.sourceIp",
   "user" : "$context.identity.user",
-  "user-agent" : "$context.identity.userAgent",
-  "user-arn" : "$context.identity.userArn",
-  "request-id" : "$context.requestId",
-  "resource-id" : "$context.resourceId",
-  "resource-path" : "$context.resourcePath"
+  "userAgent" : "$context.identity.userAgent",
+  "userArn" : "$context.identity.userArn",
+  "requestId" : "$context.requestId",
+  "resourceId" : "$context.resourceId",
+  "resourcePath" : "$context.resourcePath"
 }
 
