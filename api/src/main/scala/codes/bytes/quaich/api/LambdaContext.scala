@@ -7,7 +7,9 @@ class LambdaContext(ctx: Context) {
 
   def clientContext: Option[ClientContext] = Option(ctx.getClientContext)
 
-  def logger: LambdaLogger = ctx.getLogger
+  lazy val logger: LambdaLogger = ctx.getLogger
+
+  def log(msg: => String) = logger.log(msg)
 
   def memoryLimitInMB: Int = ctx.getMemoryLimitInMB
 

@@ -8,12 +8,15 @@ import com.amazonaws.services.lambda.runtime.{Context, LambdaLogger, RequestStre
 import org.apache.commons.io.IOUtils
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization.{read, write}
+
 
 trait HTTPApp extends RequestStreamHandler {
   val routeBuilder = Map.newBuilder[String, (JValue, LambdaContext) => JValue]
   lazy val routes = routeBuilder.result
 
-  implicit val formats = DefaultFormats
+  implicit val formats = Serialization.formats(NoTypeHints)
 
   override def handleRequest(
     input: InputStream,
@@ -32,7 +35,7 @@ trait HTTPApp extends RequestStreamHandler {
 
 
     try {
-      IOUtils.write(req.toString, output)
+      IOUtils.write(write(req), output)
     } catch {
       case e: Exception =>
         logger.log("Error while writing response\n" + e.getMessage);
