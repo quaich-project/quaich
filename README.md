@@ -27,6 +27,7 @@ quaich (pronounced ‘quake’) is a Scala microframework, inspired by the Pytho
 - Macro annotations like chalice's python decorates for easily defining routes
 - Variable handling in routes
 - sbt deployment plugin
-
-
-
+- Support for POJO translation
+- Support for S3 & DynamoDB Triggers
+- Write an sbt-lambda-deploy plugin that doesn't suck. the gilt one is an unreliable mess. Use [Amazon's Transfer](http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/transfer/TransferManager.html) status APIs for upload
+- Offline simulator for easier testing / dev. There's an [interesting one for Node](https://github.com/dherault/serverless-offline)
