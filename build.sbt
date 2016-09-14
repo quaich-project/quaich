@@ -1,16 +1,44 @@
-javacOptions ++= Seq(
-  "-source", "1.8",
-  "-target", "1.8",
-  "-Xlint"
+
+name := "quaich"
+
+val projectVersion   = "0.1-SNAPSHOT"
+val scalacticVersion = "3.0.0"
+val scalatestVersion = "3.0.0"
+val json4sVersion    = "3.4.0"
+val commonsIOVersion = "2.4"
+val awsLambdaVersion = "1.0.0"
+
+lazy val commonSettings = Seq(
+  organization := "codes.bytes",
+  version := projectVersion,
+  scalaVersion := "2.11.8",
+  retrieveManaged := true,
+  libraryDependencies ++= Seq(
+    "org.scalactic" %% "scalactic" % scalacticVersion,
+    "org.scalatest" %% "scalatest" % scalatestVersion % "test",
+    "org.json4s" %% "json4s-jackson" % json4sVersion,
+    "commons-io" % "commons-io" % commonsIOVersion
+  ),
+  scalacOptions := Seq(
+    "-encoding",
+    "UTF-8",
+    "-target:jvm-1.8",
+    "-deprecation",
+    "-language:_"
+  ),
+  fork in (Test, run) := true
 )
 
+
 lazy val root = (project in file(".")).
+  settings(commonSettings: _*).
   settings(
     name := "quaich",
     organization := "codes.bytes",
-    version := "0.1-SNAPSHOT",
-    scalaVersion := "2.11.8",
-    retrieveManaged := true
+    version := projectVersion
+  ).
+  aggregate(
+    util, httpMacros, httpApi, api, demo
   )
 
 
@@ -23,8 +51,7 @@ lazy val demo = (project in file("demo")).
   settings(
     name := "quaich-demo",
     handlerName := Some("codes.bytes.quaich.demo.DemoHTTPServer::handleRequest"),
-    s3Bucket := Some("quaich-demo"),
-    roleArn := Some("arn:aws:iam::176770676006:role/lambda_basic_execution")
+    s3Bucket := Some("quaich-demo")
   ).
   dependsOn(httpApi).
   enablePlugins(AwsLambdaPlugin)
@@ -41,8 +68,8 @@ lazy val api = (project in file("api")).
   settings(
     name := "quaich-api",
     libraryDependencies ++= Seq(
-      "com.amazonaws" % "aws-lambda-java-core" % "1.0.0",
-      "com.amazonaws" % "aws-lambda-java-events" % "1.0.0"
+      "com.amazonaws" % "aws-lambda-java-core" % awsLambdaVersion,
+      "com.amazonaws" % "aws-lambda-java-events" % awsLambdaVersion
     )
   ).dependsOn(util)
 
@@ -50,10 +77,6 @@ lazy val util = (project in file("util")).
   settings(
     name := "quaich-util",
     libraryDependencies ++= Seq(
-      "org.scalactic" %% "scalactic" % "3.0.0",
-      "org.scalatest" %% "scalatest" % "3.0.0" % "test",
-      "org.json4s" %% "json4s-jackson" % "3.4.0",
-      "commons-io" % "commons-io" % "2.4"
     )
   )
 

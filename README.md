@@ -32,3 +32,12 @@ quaich (pronounced ‘quake’) is a Scala microframework, inspired by the Pytho
 - Write an sbt-lambda-deploy plugin that doesn't suck. the gilt one is an unreliable mess. Use [Amazon's Transfer](http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/transfer/TransferManager.html) status APIs for upload
 - Offline simulator for easier testing / dev. There's an [interesting one for Node](https://github.com/dherault/serverless-offline)
 - Explore support for Alexa/Amazon Echo integration, as well as IoT buttons. Thanks a ton to [Dick Wall](https://github.com/dickwall) for the truly superb idea. And deep Pinky & the Brain Knowledge.
+
+## Notes
+
+Permissions I've been setting on my roles:
+
+- AmazonAPIGatewayPushToCloudWatchLogs
+- AmazonS3ReadOnlyAccess
+- AWSLambdaExecute
+
