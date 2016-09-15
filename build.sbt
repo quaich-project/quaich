@@ -1,12 +1,14 @@
 
 name := "quaich"
 
-val projectVersion   = "0.1-SNAPSHOT"
-val scalacticVersion = "3.0.0"
-val scalatestVersion = "3.0.0"
-val json4sVersion    = "3.4.0"
-val commonsIOVersion = "2.4"
-val awsLambdaVersion = "1.0.0"
+val projectVersion        = "0.1-SNAPSHOT"
+val scalacticVersion      = "3.0.0"
+val scalatestVersion      = "3.0.0"
+val json4sVersion         = "3.4.0"
+val commonsIOVersion      = "2.4"
+val awsLambdaVersion      = "1.0.0"
+val scalaMetaVersion      = "1.1.0"
+val metaParadiseVersion   = "3.0.0-M5"
 
 lazy val commonSettings = Seq(
   organization := "codes.bytes",
@@ -43,11 +45,17 @@ lazy val root = (project in file(".")).
 
 
 lazy val httpMacros = (project in file("http-macros")).
+  settings(commonSettings: _*).
   settings(
-    name := "quaich-http-macros"
+    name := "quaich-http-macros",
+    libraryDependencies ++= Seq(
+      "org.scalameta" %% "scalameta" % scalaMetaVersion
+    ),
+    addCompilerPlugin("org.scalameta" % "paradise" % metaParadiseVersion cross CrossVersion.full)
   )
 
 lazy val demo = (project in file("demo")).
+  settings(commonSettings: _*).
   settings(
     name := "quaich-demo",
     handlerName := Some("codes.bytes.quaich.demo.DemoHTTPServer::handleRequest"),
@@ -58,6 +66,7 @@ lazy val demo = (project in file("demo")).
 
 
 lazy val httpApi = (project in file("http-api")).
+  settings(commonSettings: _*).
   settings(
     name := "quaich-http-api",
     libraryDependencies ++= Seq(
@@ -65,6 +74,7 @@ lazy val httpApi = (project in file("http-api")).
   ).dependsOn(api, httpMacros)
 
 lazy val api = (project in file("api")).
+  settings(commonSettings: _*).
   settings(
     name := "quaich-api",
     libraryDependencies ++= Seq(
@@ -74,6 +84,7 @@ lazy val api = (project in file("api")).
   ).dependsOn(util)
 
 lazy val util = (project in file("util")).
+  settings(commonSettings: _*).
   settings(
     name := "quaich-util",
     libraryDependencies ++= Seq(
