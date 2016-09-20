@@ -73,6 +73,12 @@ lazy val httpApi = (project in file("http-api")).
     )
   ).dependsOn(api, httpMacros)
 
+lazy val httpMetadataPlugin = (project in file("http-metadata-plugin")).
+  settings(commonSettings: _*).
+  settings(
+    name := "quaich-http-metadata-plugin"
+  )
+
 lazy val api = (project in file("api")).
   settings(commonSettings: _*).
   settings(
@@ -90,6 +96,7 @@ lazy val util = (project in file("util")).
     libraryDependencies ++= Seq(
     )
   )
+
 
 
 assemblyMergeStrategy in assembly := {
