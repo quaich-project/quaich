@@ -2,6 +2,7 @@
 name := "quaich"
 
 val projectVersion        = "0.1-SNAPSHOT"
+val projectOrg            = "codes.bytes"
 val scalacticVersion      = "3.0.0"
 val scalatestVersion      = "3.0.0"
 val json4sVersion         = "3.4.0"
@@ -9,9 +10,10 @@ val commonsIOVersion      = "2.4"
 val awsLambdaVersion      = "1.0.0"
 val scalaMetaVersion      = "1.1.0"
 val metaParadiseVersion   = "3.0.0-M5"
+val awsSdkVersion         = "1.10.77"
 
 lazy val commonSettings = Seq(
-  organization := "codes.bytes",
+  organization := projectOrg,
   version := projectVersion,
   scalaVersion := "2.11.8",
   retrieveManaged := true,
@@ -36,7 +38,7 @@ lazy val root = (project in file(".")).
   settings(commonSettings: _*).
   settings(
     name := "quaich",
-    organization := "codes.bytes",
+    organization := projectOrg,
     version := projectVersion
   ).
   aggregate(
@@ -95,6 +97,21 @@ lazy val util = (project in file("util")).
     name := "quaich-util",
     libraryDependencies ++= Seq(
     )
+  )
+
+lazy val plugin = (project in file("aws-lambda-sbt-plugin")).
+  settings(
+    sbtPlugin := true,
+    name := "quaich-sbt-plugin",
+    organization := projectOrg,
+    crossScalaVersions := Seq("2.10.6"),
+    libraryDependencies ++= Seq(
+      "com.amazonaws"  % "aws-java-sdk-iam"    % awsSdkVersion,
+      "com.amazonaws"  % "aws-java-sdk-lambda" % awsSdkVersion,
+      "com.amazonaws"  % "aws-java-sdk-s3"     % awsSdkVersion
+    ),
+    addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3")
+
   )
 
 
