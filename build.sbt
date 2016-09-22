@@ -99,21 +99,6 @@ lazy val util = (project in file("util")).
     )
   )
 
-lazy val plugin = (project in file("aws-lambda-sbt-plugin")).
-  settings(
-    sbtPlugin := true,
-    name := "quaich-sbt-plugin",
-    organization := projectOrg,
-    crossScalaVersions := Seq("2.10.6"),
-    libraryDependencies ++= Seq(
-      "com.amazonaws"  % "aws-java-sdk-iam"    % awsSdkVersion,
-      "com.amazonaws"  % "aws-java-sdk-lambda" % awsSdkVersion,
-      "com.amazonaws"  % "aws-java-sdk-s3"     % awsSdkVersion
-    ),
-    addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3")
-
-  )
-
 
 
 assemblyMergeStrategy in assembly := {
