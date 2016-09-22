@@ -2,7 +2,7 @@ package codes.bytes.quaich.api.http
 
 import java.io.{InputStream, OutputStream}
 
-import codes.bytes.quaich.api.http.api.model.LambdaHttpRequest
+import codes.bytes.quaich.api.http.model.LambdaHttpRequest
 import com.amazonaws.services.lambda.runtime.{Context, LambdaLogger, RequestStreamHandler}
 import org.apache.commons.io.IOUtils
 import org.json4s.jackson.JsonMethods._
