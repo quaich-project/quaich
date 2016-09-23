@@ -49,4 +49,3 @@
   "resourceId" : "$context.resourceId",
   "resourcePath" : "$context.resourcePath"
 }
-

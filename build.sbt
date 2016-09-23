@@ -60,11 +60,12 @@ lazy val demo = (project in file("demo")).
   settings(commonSettings: _*).
   settings(
     name := "quaich-demo",
-    handlerName := Some("codes.bytes.quaich.demo.DemoHTTPServer::handleRequest"),
+    lambdaName := Some("quaich-http-demo"),
+    handlerName := Some("codes.bytes.quaich.demo.http.DemoHTTPServer::handleRequest"),
     s3Bucket := Some("quaich-demo")
   ).
   dependsOn(httpApi).
-  enablePlugins(AwsLambdaPlugin)
+  enablePlugins(AWSLambdaPlugin)
 
 
 lazy val httpApi = (project in file("http-api")).
