@@ -16,11 +16,13 @@
  */
 package codes.bytes.quaich.demo.http
 
+import codes.bytes.quaich.api.http.macros.LambdaHTTPApi
 import codes.bytes.quaich.api.http.model.LambdaHTTPRequest
 import codes.bytes.quaich.api.http.{HTTPApp, LambdaContext}
 import com.amazonaws.HttpMethod
 
-object DemoHTTPServer extends HTTPApp {
+@LambdaHTTPApi
+class DemoHTTPServer extends HTTPApp {
 
   /*
   @route("/")
@@ -38,16 +40,17 @@ object DemoHTTPServer extends HTTPApp {
         s""" { "error": "No such user" } """
     }
   }
-
-  @route("/users", methods=Vector(HttpMethod.POST))
-  def createUser(req: LambdaHttpRequest, ctx: LambdaContext): String = {
-    // Lambda will handle exceptions somewhat nicely, 500ing and logging
-    val userData = req.body.extract[User]
-    db.createUser(userData)
-    s""" { "success": 1 } """
-  }
   */
 
+  //@route("/users", methods=Vector(HttpMethod.POST))
+  def createUser(req: LambdaHTTPRequest, ctx: LambdaContext): String = {
+    // Lambda will handle exceptions somewhat nicely, 500ing and logging
+    s""" { "success": 1 } """
+  }
 }
 
+@LambdaHTTPApi
+object DemoHTTPStaticServer {
+
+}
 // vim: set ts=2 sw=2 sts=2 et:

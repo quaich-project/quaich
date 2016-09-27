@@ -28,14 +28,14 @@ import org.json4s.jackson.Serialization._
 import org.json4s.{NoTypeHints, _}
 
 trait HTTPApp extends RequestStreamHandler {
-  val routeBuilder =
-    Map.newBuilder[String, (JValue, LambdaContext) => JValue]
+  protected val routeBuilder =
+    Map.newBuilder[String, (LambdaHTTPRequest, LambdaContext) => LambdaHTTPResponse]
 
   lazy val routes = routeBuilder.result
 
-  implicit val formats = Serialization.formats(NoTypeHints)
+  protected implicit val formats = Serialization.formats(NoTypeHints)
 
-  override def handleRequest(
+  final override def handleRequest(
     input: InputStream,
     output: OutputStream,
     context: Context): Unit = {

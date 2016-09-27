@@ -8,7 +8,6 @@ val scalatestVersion      = "3.0.0"
 val json4sVersion         = "3.4.0"
 val commonsIOVersion      = "2.4"
 val awsLambdaVersion      = "1.0.0"
-val scalaMetaVersion      = "1.1.0"
 val metaParadiseVersion   = "3.0.0-M5"
 val awsSdkVersion         = "1.10.77"
 
@@ -34,6 +33,14 @@ lazy val commonSettings = Seq(
 )
 
 
+lazy val macroSettings = Seq(
+  libraryDependencies ++= Seq(
+    "org.scala-lang" % "scala-reflect" % scalaVersion.value
+  ),
+  addCompilerPlugin("org.scalameta" % "paradise" % metaParadiseVersion cross CrossVersion.full),
+  scalacOptions += "-Xplugin-require:macroparadise"
+)
+
 lazy val root = (project in file(".")).
   settings(commonSettings: _*).
   settings(
@@ -45,27 +52,25 @@ lazy val root = (project in file(".")).
     util, httpMacros, httpApi, api, demo
   )
 
-
-lazy val httpMacros = (project in file("http-macros")).
-  settings(commonSettings: _*).
-  settings(
-    name := "quaich-http-macros",
-    libraryDependencies ++= Seq(
-      "org.scalameta" %% "scalameta" % scalaMetaVersion
-    ),
-    addCompilerPlugin("org.scalameta" % "paradise" % metaParadiseVersion cross CrossVersion.full)
-  )
-
 lazy val demo = (project in file("demo")).
   settings(commonSettings: _*).
+  settings(macroSettings: _*).
   settings(
     name := "quaich-demo",
     lambdaName := Some("quaich-http-demo"),
     handlerName := Some("codes.bytes.quaich.demo.http.DemoHTTPServer::handleRequest"),
     s3Bucket := Some("quaich-demo")
   ).
-  dependsOn(httpApi).
+  dependsOn(httpApi, httpMacros).
   enablePlugins(AWSLambdaPlugin)
+
+lazy val httpMacros = (project in file("http-macros")).
+  settings(commonSettings: _*).
+  settings(macroSettings: _*).
+  settings(
+    name := "quaich-http-macros"
+  ).
+  dependsOn(httpApi)
 
 
 lazy val httpApi = (project in file("http-api")).
@@ -74,7 +79,7 @@ lazy val httpApi = (project in file("http-api")).
     name := "quaich-http-api",
     libraryDependencies ++= Seq(
     )
-  ).dependsOn(api, httpMacros)
+  ).dependsOn(api)
 
 lazy val httpMetadataPlugin = (project in file("http-metadata-plugin")).
   settings(commonSettings: _*).
