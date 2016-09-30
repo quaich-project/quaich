@@ -56,6 +56,13 @@ object LambdaHTTPApi {
           )
           extends ..$parents
           with codes.bytes.quaich.api.http.routing.HTTPHandler {
+            import org.json4s.jackson.JsonMethods._
+            import org.json4s.jackson.Serialization
+            import org.json4s.jackson.Serialization._
+            import org.json4s.{NoTypeHints, _}
+
+            protected implicit val formats = Serialization.formats(NoTypeHints)
+
             ..$body
           }
         """

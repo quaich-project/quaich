@@ -26,9 +26,9 @@ import scala.reflect.macros.whitebox
 
 
 object LambdaHTTPApiMacros {
-  def get[T](route: String)(block: => LambdaHTTPResponse): HTTPGetRoute[T] = macro get_impl[T]
+  def get[T](route: String)(block: T => LambdaHTTPResponse): HTTPGetRoute[T] = macro get_impl[T]
 
-  def get_impl[T : c.WeakTypeTag](c: whitebox.Context)(route: c.Expr[String])(block: c.Tree): c.Expr[HTTPGetRoute[T]] = {
+  def get_impl[T : c.WeakTypeTag](c: whitebox.Context)(route: c.Expr[String])(block: c.Expr[T ⇒ LambdaHTTPResponse]): c.Expr[HTTPGetRoute[T]] = {
     import c.universe._
     import Flag._
 
@@ -36,8 +36,9 @@ object LambdaHTTPApiMacros {
 
     val obj = q"""
     new codes.bytes.quaich.api.http.routing.HTTPGetRoute[$tpe] {
-      def apply(req: $tpe, httpRequest: LambdaHTTPRequest, context: LambdaContext): LambdaHTTPResponse = {
-        ..$block
+      def apply(req: $tpe): LambdaHTTPResponse = {
+        val body = request.body.extract[$tpe]
+        $block(body)
       }
     }
     """

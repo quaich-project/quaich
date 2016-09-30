@@ -21,7 +21,7 @@ import codes.bytes.quaich.api.http.model.{LambdaContext, LambdaHTTPRequest, Lamb
 
 
 trait HTTPGetRoute[T] extends HTTPRouting {
-  def apply(req: T, request: LambdaHTTPRequest, context: LambdaContext): LambdaHTTPResponse
+  def apply(req: T): LambdaHTTPResponse
 }
 
 // vim: set ts=2 sw=2 sts=2 et:

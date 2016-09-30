@@ -21,13 +21,13 @@ import codes.bytes.quaich.api.http.model.{LambdaContext, LambdaHTTPRequest, Lamb
 import codes.bytes.quaich.api.http.HTTPApp
 import codes.bytes.quaich.api.http.macros.LambdaHTTPApiMacros._
 import codes.bytes.quaich.demo.http.model.TestObject
-import org.json4s.JsonAST.JString
 
 
 @LambdaHTTPApi
 class DemoHTTPServer {
 
-  get[TestObject]("/") {
+  get[TestObject]("/") { body ⇒
+    println(body)
     println(context)
     println(request)
     LambdaHTTPResponse(JString("OK"))
