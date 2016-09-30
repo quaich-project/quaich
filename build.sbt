@@ -58,7 +58,7 @@ lazy val demo = (project in file("demo")).
   settings(
     name := "quaich-demo",
     lambdaName := Some("quaich-http-demo"),
-    handlerName := Some("codes.bytes.quaich.demo.http.DemoHTTPServer::handleRequest"),
+    handlerName := Some("codes.bytes.quaich.demo.http.DemoHTTPServer$::handleRequest"),
     s3Bucket := Some("quaich-demo")
   ).
   dependsOn(httpApi, httpMacros).

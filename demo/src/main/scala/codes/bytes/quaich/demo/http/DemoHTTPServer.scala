@@ -32,6 +32,16 @@ class DemoHTTPServer {
     println(request)
     LambdaHTTPResponse(JString("OK"))
   }
+
+  // Can also annotate type of input to block instead of passing to get
+  get("/foo") { body: TestObject ⇒
+    println(body)
+    println(context)
+    println(request)
+    LambdaHTTPResponse(JString("OK"))
+
+
+  }
 }
 
 // vim: set ts=2 sw=2 sts=2 et:
