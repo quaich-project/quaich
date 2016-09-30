@@ -27,33 +27,9 @@ import org.json4s.JsonAST.JString
 @LambdaHTTPApi
 class DemoHTTPServer {
 
-  /*
-  @route("/")
-  def index(req: LambdaHttpRequest, ctx: LambdaContext): String = {
-    """{ "hello" : "world" }"""
-  }
-
-  @route("/users/{username}")
-  def stateOfCity(req: LambdaHttpRequest, ctx: LambdaContext,
-    username: String): String = {
-    val user = db.getUser(username) match {
-      case Some(userData) => userData.toJson
-      case None =>
-        ctx.log(s"ERROR: User '$username' not found")
-        s""" { "error": "No such user" } """
-    }
-  }
-  */
-
-  //@route("/users", methods=Vector(HttpMethod.POST))
-  def createUser(req: LambdaHTTPRequest, ctx: LambdaContext): String = {
-    // Lambda will handle exceptions somewhat nicely, 500ing and logging
-    s""" { "success": 1 } """
-  }
-
   get[TestObject]("/") {
-/*    println(context)
-    println(httpRequest)*/
+    println(context)
+    println(request)
     LambdaHTTPResponse(JString("OK"))
   }
 }
