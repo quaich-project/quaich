@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package codes.bytes.quaich.api.http
+package codes.bytes.quaich.api.http.model
 
 import com.amazonaws.services.lambda.runtime.{ClientContext, CognitoIdentity, Context, LambdaLogger}
 

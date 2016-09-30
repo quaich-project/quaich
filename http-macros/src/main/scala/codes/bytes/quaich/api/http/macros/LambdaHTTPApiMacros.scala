@@ -17,11 +17,35 @@
 
 package codes.bytes.quaich.api.http.macros
 
+import codes.bytes.quaich.api.http.model.LambdaHTTPResponse
+import codes.bytes.quaich.api.http.routing.HTTPGetRoute
+
+import scala.language.experimental.macros
+import scala.reflect.api.Trees
+import scala.reflect.macros.whitebox
+
 
 object LambdaHTTPApiMacros {
-/*  inline def get(route: String): ⇒ LambdaHTTPResponse = {
+  def get[T](route: String)(block: => LambdaHTTPResponse): HTTPGetRoute[T] = macro get_impl[T]
 
-  }*/
+  def get_impl[T : c.WeakTypeTag](c: whitebox.Context)(route: c.Expr[String])(block: c.Tree): c.Expr[HTTPGetRoute[T]] = {
+    import c.universe._
+    import Flag._
+
+    val tpe = weakTypeOf[T]
+
+    val obj = q"""
+    new codes.bytes.quaich.api.http.routing.HTTPGetRoute[$tpe] {
+      def apply(req: $tpe, httpRequest: LambdaHTTPRequest, context: LambdaContext): LambdaHTTPResponse = {
+        ..$block
+      }
+    }
+    """
+
+    println(obj)
+
+    c.Expr[HTTPGetRoute[T]](obj)
+  }
 
 }
 // vim: set ts=2 sw=2 sts=2 et:

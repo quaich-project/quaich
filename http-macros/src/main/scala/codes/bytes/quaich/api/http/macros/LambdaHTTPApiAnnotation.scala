@@ -19,12 +19,13 @@ package codes.bytes.quaich.api.http.macros
 
 import scala.annotation.{StaticAnnotation, compileTimeOnly}
 import scala.language.postfixOps
-import scala.reflect.macros.whitebox
+import scala.reflect.macros.blackbox
 import scala.language.experimental.macros
 import scala.reflect.api.Trees
 
 object LambdaHTTPApi {
-  def annotation_impl(c: whitebox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
+  // todo - check for companion object and reject
+  def annotation_impl(c: blackbox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
     import c.universe._
     import Flag._
 
@@ -32,37 +33,54 @@ object LambdaHTTPApi {
 
     val inputs = annottees.map(_.tree).toList
 
-    def isRedundantAnnotation(parents: Seq[Trees#Tree]): Boolean = {
-      parents.exists {
-        case i: Ident ⇒
-          i.name.encodedName.toString == "HTTPApp"
-        case _ ⇒
-          false
-      }
-    }
+
 
     val result: Tree = inputs match {
-      case (cls @ q"$mods class $name[..$tparams] extends ..$parents { ..$body }") :: _ if mods
-        .hasFlag(ABSTRACT) ⇒
+      case (cls @ q"$mods class $name[..$tparams] extends ..$parents { ..$body }") :: Nil if mods.hasFlag(ABSTRACT) ⇒
         c.abort(p, "! The @LambdaHTTPApi annotation is not valid on abstract classes.")
         cls
-      case (cls @ q"$mods class $name[..$tparams] extends ..$parents { ..$body }") :: _ ⇒
-        if (isRedundantAnnotation(parents)) {
-          c.warning(p, s"$name already extends HTTPApp; @LambdaHTTPApi notation is redundant and unnecessary.")
-          cls
-        } else
-          q"$mods class $name[..$tparams] extends ..$parents with HTTPApp { ..$body }"
-      case (o @ q"$mods object $name extends ..$parents { ..$body}") :: _ ⇒
-        if (isRedundantAnnotation(parents)) {
-          c.warning(p, s"$name already extends HTTPApp; @LambdaHTTPApi notation is redundant and unnecessary.")
-          o
-        } else
-          q"$mods object $name extends ..$parents with HTTPApp { ..$body }"
+      // todo - detect and handle companion object!
+      case (cls @ q"$mods class $name[..$tparams] extends ..$parents { ..$body }") :: Nil ⇒
+        //val baseName = name.decodedName.toString
+        //val handlerName = TermName(s"$baseName$$RequestHandler")
+        //val handlerName = name.toTermName
+        val handlerName = name.asInstanceOf[TypeName].toTermName
+
+
+
+
+        val cls = q"""
+        $mods class $name[..$tparams](
+            val request: codes.bytes.quaich.api.http.model.LambdaHTTPRequest,
+            val context: codes.bytes.quaich.api.http.model.LambdaContext
+          )
+          extends ..$parents
+          with codes.bytes.quaich.api.http.routing.HTTPHandler {
+            ..$body
+          }
+        """
+
+        val obj = q"""
+        object $handlerName extends codes.bytes.quaich.api.http.HTTPApp {
+          def newHandler(
+            request: codes.bytes.quaich.api.http.model.LambdaHTTPRequest,
+            context: codes.bytes.quaich.api.http.model.LambdaContext
+          ): codes.bytes.quaich.api.http.routing.HTTPHandler =
+            new $name(request, context)
+
+
+        }
+        """
+
+        q"$cls; $obj"
+
       case Nil ⇒
         c.abort(p, s"Cannot annotate an empty Tree.")
       case _ ⇒
-        c.abort(p, s"! The @LambdaHTTPApi Annotation is only valid on Objects and non-abstract Classes")
+        c.abort(p, s"! The @LambdaHTTPApi Annotation is only valid on non-abstract Classes")
     }
+
+    c.info(p, "result: " + result, force = true)
 
     c.Expr[Any](result)
 

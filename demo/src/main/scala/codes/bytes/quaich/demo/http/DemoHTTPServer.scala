@@ -17,12 +17,15 @@
 package codes.bytes.quaich.demo.http
 
 import codes.bytes.quaich.api.http.macros.LambdaHTTPApi
-import codes.bytes.quaich.api.http.model.LambdaHTTPRequest
-import codes.bytes.quaich.api.http.{HTTPApp, LambdaContext}
-import com.amazonaws.HttpMethod
+import codes.bytes.quaich.api.http.model.{LambdaContext, LambdaHTTPRequest, LambdaHTTPResponse}
+import codes.bytes.quaich.api.http.HTTPApp
+import codes.bytes.quaich.api.http.macros.LambdaHTTPApiMacros._
+import codes.bytes.quaich.demo.http.model.TestObject
+import org.json4s.JsonAST.JString
+
 
 @LambdaHTTPApi
-class DemoHTTPServer extends HTTPApp {
+class DemoHTTPServer {
 
   /*
   @route("/")
@@ -47,10 +50,12 @@ class DemoHTTPServer extends HTTPApp {
     // Lambda will handle exceptions somewhat nicely, 500ing and logging
     s""" { "success": 1 } """
   }
+
+  get[TestObject]("/") {
+/*    println(context)
+    println(httpRequest)*/
+    LambdaHTTPResponse(JString("OK"))
+  }
 }
 
-@LambdaHTTPApi
-object DemoHTTPStaticServer {
-
-}
 // vim: set ts=2 sw=2 sts=2 et:
