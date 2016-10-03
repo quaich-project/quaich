@@ -1,0 +1,29 @@
+<idea-plugin version="2">
+    <id>codes.bytes.quaich.intellij</id>
+    <name>Quaich IntelliJ Plugin</name>
+    <version>0.1</version>
+    <vendor url="http://github.com/bwmcadams/quaich">Quaich Project</vendor>
+
+    <description>Support for the AWS Lambda Framework for Scala, Quaich</description>
+
+    <idea-version since-build="162.0"/>
+
+    <depends>org.intellij.scala</depends>
+
+    <application-components>
+        <!-- TODO put your components here -->
+    </application-components>
+
+    <project-components>
+        <!-- TODO put your components here -->
+    </project-components>
+
+    <extensions defaultExtensionNs="org.intellij.scala">
+        <syntheticMemberInjector implementation="codes.bytes.quaich.intellij.QuaichInjector"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- TODO put your extensions here -->
+    </extensions>
+
+</idea-plugin>
