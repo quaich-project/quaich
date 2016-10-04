@@ -16,7 +16,7 @@
  */
 package codes.bytes.quaich.api.http.model
 
-import org.json4s.JObject
+import org.json4s._
 
 
 case class LambdaHTTPRequest(

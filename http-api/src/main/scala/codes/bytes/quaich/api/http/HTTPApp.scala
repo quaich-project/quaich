@@ -32,6 +32,7 @@ trait HTTPApp extends RequestStreamHandler {
 
   def newHandler(request: LambdaHTTPRequest, context: LambdaContext): HTTPHandler
 
+
   protected implicit val formats = Serialization.formats(NoTypeHints)
 
   final override def handleRequest(
@@ -50,7 +51,6 @@ trait HTTPApp extends RequestStreamHandler {
     logger.log(s"Input: ${pretty(render(json))}")
 
     val response = newHandler(req, ctx).routeRequest()
-
 
     try {
       IOUtils.write(write(response), output)

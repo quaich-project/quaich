@@ -18,23 +18,38 @@
 package codes.bytes.quaich.api.http.routing
 
 import codes.bytes.quaich.api.http.model.{LambdaContext, LambdaHTTPRequest, LambdaHTTPResponse}
-import org.json4s.JsonAST.JString
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization._
+import org.json4s.{NoTypeHints, _}
 
 
 trait HTTPHandler {
+
   protected val request: LambdaHTTPRequest
   protected val context: LambdaContext
 
+  protected val ViewArgsRE = """\{\w+\}""".r
+
   protected val routeBuilder =
-    Map.newBuilder[String, () => LambdaHTTPResponse]
+    Map.newBuilder[String, HTTPRoute[_]]
 
   lazy val routes = routeBuilder.result
 
   // TODO - Magnet pattern for response handling...
   def routeRequest(): LambdaHTTPResponse = {
+    routes.get(request.resource) match {
+      case Some(handler) ⇒ handler()
+      case None ⇒ LambdaHTTPResponse(JNull, statusCode = 404)
+
+    }
     LambdaHTTPResponse(JString("OK"))
   }
 
+  def addRoute(route: String, handler: HTTPRoute[_]): Unit = {
+    routeBuilder += route → handler
+  }
 }
 
 // vim: set ts=2 sw=2 sts=2 et:

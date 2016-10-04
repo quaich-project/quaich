@@ -6,7 +6,7 @@ val projectVersion        = "0.1-SNAPSHOT"
 val projectOrg            = "codes.bytes"
 val scalacticVersion      = "3.0.0"
 val scalatestVersion      = "3.0.0"
-val json4sVersion         = "3.4.0"
+val json4sVersion         = "3.4.1"
 val commonsIOVersion      = "2.4"
 val awsLambdaVersion      = "1.0.0"
 val metaParadiseVersion   = "3.0.0-M5"
@@ -39,7 +39,10 @@ lazy val macroSettings = Seq(
     "org.scala-lang" % "scala-reflect" % scalaVersion.value
   ),
   addCompilerPlugin("org.scalameta" % "paradise" % metaParadiseVersion cross CrossVersion.full),
-  scalacOptions += "-Xplugin-require:macroparadise"
+  scalacOptions ++= Seq(
+    "-Xplugin-require:macroparadise"/*,
+    "-Ymacro-debug-lite"*/
+  )
 )
 
 lazy val root = (project in file(".")).
@@ -50,7 +53,7 @@ lazy val root = (project in file(".")).
     version := projectVersion
   ).
   aggregate(
-    util, httpMacros, httpApi, api, demo
+    util, http, httpMacros, httpApi, api, demo
   )
 
 lazy val demo = (project in file("demo")).
@@ -60,7 +63,8 @@ lazy val demo = (project in file("demo")).
     name := "quaich-demo",
     lambdaName := Some("quaich-http-demo"),
     handlerName := Some("codes.bytes.quaich.demo.http.DemoHTTPServer$::handleRequest"),
-    s3Bucket := Some("quaich-demo")
+    s3Bucket := Some("quaich-demo"),
+    publishArtifact in (Compile, packageDoc) := false
   ).
   dependsOn(http).
   enablePlugins(AWSLambdaPlugin)

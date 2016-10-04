@@ -17,8 +17,8 @@
 
 package codes.bytes.quaich.api.http.routing
 
-trait HTTPRouting {
 
+trait HTTPOptionsRouting {
 
 }
 

@@ -14,24 +14,14 @@
  * limitations under the License.
  *
  */
-package codes.bytes.quaich.demo.http
 
-import codes.bytes.quaich.api.http.macros.LambdaHTTPApi
+package codes.bytes.quaich.api.http.routing
+
 import codes.bytes.quaich.api.http.model.LambdaHTTPResponse
-import codes.bytes.quaich.api.http.macros._
-import codes.bytes.quaich.demo.http.model.TestObject
-import org.json4s._
 
+trait HTTPRoute[T] {
 
-@LambdaHTTPApi
-class DemoHTTPServer {
-
-  get[TestObject]("/") { body ⇒
-    println(s"Body: $body")
-    println(s"Context: $context")
-    println(s"Request: $request")
-    LambdaHTTPResponse(JString("OK"))
-  }
+  def apply(): LambdaHTTPResponse
 
 }
 
