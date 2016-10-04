@@ -15,9 +15,7 @@
  *
  */
 
-package codes.bytes.quaich.api.http
-
-import codes.bytes.quaich.api.http.model.LambdaHTTPResponse
+package codes.bytes.quaich.api
 
 /*
  * Copyright (c) 2016 Brendan McAdams & Thomas Lockney 
@@ -35,43 +33,30 @@ import codes.bytes.quaich.api.http.model.LambdaHTTPResponse
  * limitations under the License.
  *
  */
-package object macros {
-  /**
-    * Get route, with automatic deserialization of JSON 'body' attribute
-    * (pass through of what the caller passes to HTTP Gateway)
-    * to case classes via JSON4S
-    *
-    * // TODO - Pluggable support for Circe & Jawn
-    *
-    * @param route
-    * @param block
-    * @tparam T
-    * @return
-    */
-  def get[T](route: String)(block: T => LambdaHTTPResponse): Any = macro get_impl[T]
+package object http {
 
-
-
-  def get_impl[T : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[T ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
-    import c.universe._
-
-    val tpe = weakTypeOf[T]
-
-    val obj = q"""
-    val handler = new codes.bytes.quaich.api.http.routing.HTTPGetRoute[$tpe] {
-      def apply(): LambdaHTTPResponse = {
-        println(s"Request Body: " + request.body)
-        val body = request.body.extract[$tpe]
-        $block(body)
-      }
+  object HTTPMethod {
+    def apply(method: String): HTTPMethod = method match {
+      case "GET" ⇒ GET
+      case "POST" ⇒ POST
+      case "PUT" ⇒ PUT
+      case "DELETE" ⇒ DELETE
+      case "HEAD" ⇒ HEAD
+      case "OPTIONS" ⇒ OPTIONS
+      case "PATCH" ⇒ PATCH
+      case _ ⇒
+        throw new IllegalArgumentException(s"Unsupported/unknown HTTP Method '$method'")
     }
-
-    addRoute(codes.bytes.quaich.api.http.GET, $route, handler)
-    """
-
-    c.Expr[Any](obj)
   }
 
+  sealed abstract class HTTPMethod
+  case object GET extends HTTPMethod
+  case object POST extends HTTPMethod
+  case object PUT extends HTTPMethod
+  case object DELETE extends HTTPMethod
+  case object HEAD extends HTTPMethod
+  case object OPTIONS extends HTTPMethod
+  case object PATCH extends HTTPMethod
 
 }
 

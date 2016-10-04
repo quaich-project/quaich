@@ -17,6 +17,7 @@
 
 package codes.bytes.quaich.api.http.routing
 
+import codes.bytes.quaich.api.http._
 import codes.bytes.quaich.api.http.model.{LambdaContext, LambdaHTTPRequest, LambdaHTTPResponse}
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
@@ -33,13 +34,13 @@ trait HTTPHandler {
   protected val ViewArgsRE = """\{\w+\}""".r
 
   protected val routeBuilder =
-    Map.newBuilder[String, HTTPRoute[_]]
+    Map.newBuilder[(HTTPMethod, String), HTTPRoute[_]]
 
   lazy val routes = routeBuilder.result
 
   // TODO - Magnet pattern for response handling...
   def routeRequest(): LambdaHTTPResponse = {
-    routes.get(request.resource) match {
+    routes.get(HTTPMethod(request.httpMethod) → request.resource) match {
       case Some(handler) ⇒ handler()
       case None ⇒ LambdaHTTPResponse(JNull, statusCode = 404)
 
@@ -47,8 +48,8 @@ trait HTTPHandler {
     LambdaHTTPResponse(JString("OK"))
   }
 
-  def addRoute(route: String, handler: HTTPRoute[_]): Unit = {
-    routeBuilder += route → handler
+  def addRoute(method: HTTPMethod, route: String, handler: HTTPRoute[_]): Unit = {
+    routeBuilder += (method → route) → handler
   }
 }
 
