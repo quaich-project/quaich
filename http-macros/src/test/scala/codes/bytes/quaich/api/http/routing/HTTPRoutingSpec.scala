@@ -214,7 +214,12 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
 
       val server = new TestHTTPServer(req, null)
 
-      server.routeRequest()
+      val response = server.routeRequest()
+
+      response must have (
+        'statusCode (200),
+        'body (JString("OK"))
+      )
 
     }
   }
