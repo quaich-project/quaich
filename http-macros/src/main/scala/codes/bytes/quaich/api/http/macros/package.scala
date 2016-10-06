@@ -17,8 +17,6 @@
 
 package codes.bytes.quaich.api.http
 
-import codes.bytes.quaich.api.http.model.LambdaHTTPResponse
-
 
 /*
  * Copyright (c) 2016 Brendan McAdams & Thomas Lockney 

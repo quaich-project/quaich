@@ -17,7 +17,7 @@
 
 package codes.bytes.quaich.api.http.routing
 
-import codes.bytes.quaich.api.http.model.LambdaHTTPResponse
+import codes.bytes.quaich.api.http._
 
 trait HTTPRoute[T] {
 

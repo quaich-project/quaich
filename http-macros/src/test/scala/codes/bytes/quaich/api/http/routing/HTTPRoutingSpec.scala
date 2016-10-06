@@ -17,9 +17,9 @@
 
 package codes.bytes.quaich.api.http.routing
 
-import codes.bytes.quaich.api.http.model.LambdaHTTPRequest
 import org.scalatest.{MustMatchers, WordSpec}
-import codes.bytes.quaich.api.http.model.LambdaHTTPResponse
+
+import codes.bytes.quaich.api.http._
 import codes.bytes.quaich.api.http.macros._
 
 import org.json4s._
@@ -87,6 +87,7 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       |    }
       |}
     """.stripMargin
+
   val sampleRequestJSONWithOneArg =
     """
       |{

@@ -16,8 +16,7 @@
  */
 package codes.bytes.quaich.demo.http
 
-import codes.bytes.quaich.api.http.macros.LambdaHTTPApi
-import codes.bytes.quaich.api.http.model.LambdaHTTPResponse
+import codes.bytes.quaich.api.http._
 import codes.bytes.quaich.api.http.macros._
 import codes.bytes.quaich.demo.http.model.TestObject
 import org.json4s._

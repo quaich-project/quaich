@@ -47,8 +47,8 @@ object LambdaHTTPApi {
 
         val cls = q"""
         $mods class $name[..$tparams](
-            val request: codes.bytes.quaich.api.http.model.LambdaHTTPRequest,
-            val context: codes.bytes.quaich.api.http.model.LambdaContext
+            val request: codes.bytes.quaich.api.http.LambdaHTTPRequest,
+            val context: codes.bytes.quaich.api.http.LambdaContext
           )
           extends ..$parents
           with codes.bytes.quaich.api.http.HTTPHandler {
@@ -66,8 +66,8 @@ object LambdaHTTPApi {
         val obj = q"""
         object $handlerName extends codes.bytes.quaich.api.http.HTTPApp {
           def newHandler(
-            request: codes.bytes.quaich.api.http.model.LambdaHTTPRequest,
-            context: codes.bytes.quaich.api.http.model.LambdaContext
+            request: codes.bytes.quaich.api.http.LambdaHTTPRequest,
+            context: codes.bytes.quaich.api.http.LambdaContext
           ): codes.bytes.quaich.api.http.HTTPHandler =
             new $name(request, context)
 

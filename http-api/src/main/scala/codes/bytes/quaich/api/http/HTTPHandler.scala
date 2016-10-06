@@ -17,7 +17,7 @@
 
 package codes.bytes.quaich.api.http
 
-import codes.bytes.quaich.api.http.model.{LambdaContext, LambdaHTTPRequest, LambdaHTTPResponse}
+import codes.bytes.quaich.api.http._
 import codes.bytes.quaich.api.http.routing.HTTPRoute
 import org.json4s._
 
