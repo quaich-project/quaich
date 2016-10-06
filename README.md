@@ -24,8 +24,7 @@ quaich (pronounced ‘quake’) is a Scala microframework, inspired by the Pytho
 - [Logging support](http://docs.aws.amazon.com/lambda/latest/dg/java-logging.html)
 - Flexibility using both core, structured base handler APIs such as Amazon provides, and customizable ones.
 - Support for multiple pluggable JSON libraries, because Scala has about 64k of them and everyone has their own preference
-- Macro annotations like chalice's python decorates for easily defining routes
-- Variable handling in routes
+- Magnet pattern for HTTP Responses
 - sbt deployment plugin
 - Support for POJO translation
 - Support for S3 & DynamoDB Triggers

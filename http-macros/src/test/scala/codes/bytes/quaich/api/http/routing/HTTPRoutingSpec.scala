@@ -207,10 +207,7 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       val input = sampleRequestJSONWithTwoArgs
       val json = parse(input)
 
-      println("Extracting JSON")
       val req = json.extract[LambdaHTTPRequest]
-
-      println(req)
 
       val server = new TestHTTPServer(req, null)
 
@@ -258,6 +255,7 @@ class TestHTTPServer {
     println(s"Patch Body: $body")
     LambdaHTTPResponse(JString("OK"))
   }
+
 
   println(routes)
 }
