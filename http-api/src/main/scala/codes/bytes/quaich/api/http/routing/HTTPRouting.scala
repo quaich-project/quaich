@@ -18,8 +18,31 @@
 package codes.bytes.quaich.api.http.routing
 
 
-trait HTTPOptionsRouting {
+trait HTTPGetRoute extends HTTPRoute[Unit] {
 
 }
 
-// vim: set ts=2 sw=2 sts=2 et:
+trait HTTPPostRoute[T] extends HTTPRoute[T] {
+
+}
+
+trait HTTPPutRoute[T] extends HTTPRoute[T] {
+
+}
+
+trait HTTPDeleteRoute[T] extends HTTPRoute[T] {
+
+}
+
+trait HTTPPatchRoute[T] extends HTTPRoute[T] {
+
+}
+
+trait HTTPHeadRoute extends HTTPRoute[Unit] {
+
+}
+
+trait HTTPOptionsRoute extends HTTPRoute[Unit] {
+
+}
+

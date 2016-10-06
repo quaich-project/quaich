@@ -21,7 +21,6 @@ import scala.annotation.{StaticAnnotation, compileTimeOnly}
 import scala.language.postfixOps
 import scala.reflect.macros.blackbox
 import scala.language.experimental.macros
-import scala.reflect.api.Trees
 
 object LambdaHTTPApi {
   // todo - check for companion object and reject
@@ -46,16 +45,13 @@ object LambdaHTTPApi {
         //val handlerName = name.toTermName
         val handlerName = name.asInstanceOf[TypeName].toTermName
 
-
-
-
         val cls = q"""
         $mods class $name[..$tparams](
             val request: codes.bytes.quaich.api.http.model.LambdaHTTPRequest,
             val context: codes.bytes.quaich.api.http.model.LambdaContext
           )
           extends ..$parents
-          with codes.bytes.quaich.api.http.routing.HTTPHandler {
+          with codes.bytes.quaich.api.http.HTTPHandler {
             import org.json4s.jackson.JsonMethods._
             import org.json4s.jackson.Serialization
             import org.json4s.jackson.Serialization._
@@ -72,7 +68,7 @@ object LambdaHTTPApi {
           def newHandler(
             request: codes.bytes.quaich.api.http.model.LambdaHTTPRequest,
             context: codes.bytes.quaich.api.http.model.LambdaContext
-          ): codes.bytes.quaich.api.http.routing.HTTPHandler =
+          ): codes.bytes.quaich.api.http.HTTPHandler =
             new $name(request, context)
 
 
@@ -87,7 +83,7 @@ object LambdaHTTPApi {
         c.abort(p, s"! The @LambdaHTTPApi Annotation is only valid on non-abstract Classes")
     }
 
-    c.info(p, "result: " + result, force = true)
+    //c.info(p, "result: " + result, force = true)
 
     c.Expr[Any](result)
 

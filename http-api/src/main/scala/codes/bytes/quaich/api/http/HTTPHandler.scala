@@ -15,15 +15,11 @@
  *
  */
 
-package codes.bytes.quaich.api.http.routing
+package codes.bytes.quaich.api.http
 
-import codes.bytes.quaich.api.http._
 import codes.bytes.quaich.api.http.model.{LambdaContext, LambdaHTTPRequest, LambdaHTTPResponse}
+import codes.bytes.quaich.api.http.routing.HTTPRoute
 import org.json4s._
-import org.json4s.jackson.JsonMethods._
-import org.json4s.jackson.Serialization
-import org.json4s.jackson.Serialization._
-import org.json4s.{NoTypeHints, _}
 
 
 trait HTTPHandler {

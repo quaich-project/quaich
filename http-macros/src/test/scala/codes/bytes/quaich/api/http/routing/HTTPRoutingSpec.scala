@@ -36,7 +36,7 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       |{
       |    "resource": "/quaich-http-demo/users/{username}/foo/{bar}",
       |    "path": "/quaich-http-demo/users/brendan/foo/123",
-      |    "httpMethod": "GET",
+      |    "httpMethod": "POST",
       |    "headers": {
       |        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
       |        "Accept-Encoding": "gzip, deflate, sdch, br",
@@ -78,7 +78,7 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       |            "user": null
       |        },
       |        "resourcePath": "/quaich-http-demo/users/{username}/foo/{bar}",
-      |        "httpMethod": "GET",
+      |        "httpMethod": "POST",
       |        "apiId": "f7hyd8m7yl"
       |    },
       |    "body": {
@@ -92,7 +92,7 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       |{
       |    "resource": "/quaich-http-demo/users/{username}",
       |    "path": "/quaich-http-demo/users/brendan",
-      |    "httpMethod": "GET",
+      |    "httpMethod": "POST",
       |    "headers": {
       |        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
       |        "Accept-Encoding": "gzip, deflate, sdch, br",
@@ -138,7 +138,7 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       |            "user": null
       |        },
       |        "resourcePath": "/quaich-http-demo/users/{username}",
-      |        "httpMethod": "GET",
+      |        "httpMethod": "POST",
       |        "apiId": "f7hyd8m7yl"
       |    },
       |    "body": {
@@ -152,7 +152,7 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       |{
       |    "resource": "/quaich-http-demo",
       |    "path": "/quaich-http-demo",
-      |    "httpMethod": "GET",
+      |    "httpMethod": "POST",
       |    "headers": {
       |        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
       |        "Accept-Encoding": "gzip, deflate, sdch, br",
@@ -191,7 +191,7 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       |            "user": null
       |        },
       |        "resourcePath": "/quaich-http-demo",
-      |        "httpMethod": "GET",
+      |        "httpMethod": "POST",
       |        "apiId": "f7hyd8m7yl"
       |    },
       |    "body": {
@@ -228,11 +228,36 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
 @LambdaHTTPApi
 class TestHTTPServer {
 
-  get[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
-    println(s"Body: $body")
+  get("/quaich-http-demo/users/{username}/foo/{bar}") {
     LambdaHTTPResponse(JString("OK"))
   }
 
+  head("/quaich-http-demo/users/{username}/foo/{bar}") {
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  options("/quaich-http-demo/users/{username}/foo/{bar}") {
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  delete("/quaich-http-demo/users/{username}/foo/{bar}") {
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+    println(s"Post Body: $body")
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  put[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+    println(s"Put Body: $body")
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+    println(s"Patch Body: $body")
+    LambdaHTTPResponse(JString("OK"))
+  }
 
   println(routes)
 }

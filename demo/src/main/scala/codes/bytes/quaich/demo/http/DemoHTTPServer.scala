@@ -26,13 +26,38 @@ import org.json4s._
 @LambdaHTTPApi
 class DemoHTTPServer {
 
-  get[TestObject]("/") { body ⇒
-    println(s"Body: $body")
-    println(s"Context: $context")
-    println(s"Request: $request")
+  get("/quaich-http-demo/users/{username}/foo/{bar}") {
     LambdaHTTPResponse(JString("OK"))
   }
 
+  head("/quaich-http-demo/users/{username}/foo/{bar}") {
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  options("/quaich-http-demo/users/{username}/foo/{bar}") {
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  delete("/quaich-http-demo/users/{username}/foo/{bar}") {
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+    println(s"Post Body: $body")
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  put[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+    println(s"Put Body: $body")
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+    println(s"Patch Body: $body")
+    LambdaHTTPResponse(JString("OK"))
+  }
+
+  println(routes)
 }
 
 // vim: set ts=2 sw=2 sts=2 et:
