@@ -32,7 +32,7 @@ trait HTTPResponseMarshallers {
   implicit val formats = Serialization.formats(NoTypeHints)
 
   @implicitNotFound("Unable to determine how to marshal ${T} to a JSON4S JValue; please provide an implicit instance of HTTPResponseMarshaller[${T}]")
-  trait HTTPResponseMarshaller[T] {
+  trait HTTPResponseMarshaller[-T] {
     def apply(value: T): Option[String]
   }
 
@@ -44,9 +44,6 @@ trait HTTPResponseMarshallers {
     def apply(value: AnyRef) = Option(write(value))
   }
 
-  implicit object StringResponseMarshaller extends HTTPResponseMarshaller[String] {
-    def apply(value: String) = Option(value)
-  }
 }
 
 // vim: set ts=2 sw=2 sts=2 et:

@@ -31,7 +31,7 @@ import org.json4s.{NoTypeHints, _}
 class HTTPRoutingSpec extends WordSpec with MustMatchers {
   protected implicit val formats = Serialization.formats(NoTypeHints)
 
-  val sampleRequestJSONWithTwoArgs =
+  val sampleRequestPost =
     """
       |{
       |    "resource": "/quaich-http-demo/users/{username}/foo/{bar}",
@@ -88,12 +88,12 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       |}
     """.stripMargin
 
-  val sampleRequestJSONWithOneArg =
+  val sampleRequestPut  =
     """
       |{
       |    "resource": "/quaich-http-demo/users/{username}",
       |    "path": "/quaich-http-demo/users/brendan",
-      |    "httpMethod": "POST",
+      |    "httpMethod": "PUT",
       |    "headers": {
       |        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
       |        "Accept-Encoding": "gzip, deflate, sdch, br",
@@ -139,7 +139,7 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       |            "user": null
       |        },
       |        "resourcePath": "/quaich-http-demo/users/{username}",
-      |        "httpMethod": "POST",
+      |        "httpMethod": "PUT",
       |        "apiId": "f7hyd8m7yl"
       |    },
       |    "body": {
@@ -148,6 +148,7 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       |    }
       |}
     """.stripMargin
+
   val sampleRequestJSONNoArgs =
     """
       |{
@@ -204,8 +205,8 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
 
 
   "Running a routing request" should {
-    "resolve a sane route" in {
-      val input = sampleRequestJSONWithTwoArgs
+    "allow a magnet response of an int" in {
+      val input = sampleRequestPost
       val json = parse(input)
 
       val req = json.extract[LambdaHTTPRequest]
@@ -217,6 +218,22 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       response must have (
         'statusCode (200),
         'body (None)
+      )
+
+    }
+    "allow a magnet response of a case class" in {
+      val input = sampleRequestPut
+      val json = parse(input)
+
+      val req = json.extract[LambdaHTTPRequest]
+
+      val server = new TestHTTPServer(req, null)
+
+      val response = server.routeRequest()
+
+      response must have (
+        'statusCode (200),
+        'body (Option(write(TestObject("OMG", "WTF"))))
       )
 
     }
@@ -247,9 +264,10 @@ class TestHTTPServer {
     complete(200)
   }
 
-  put[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+  put[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
     println(s"Put Body: $body")
-    complete("OK")
+    val response = TestObject("OMG", "WTF")
+    complete(fromObject(response)(ClassResponseMarshaller))
   }
 
   patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
