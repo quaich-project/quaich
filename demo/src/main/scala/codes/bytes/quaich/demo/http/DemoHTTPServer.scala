@@ -30,11 +30,11 @@ class DemoHTTPServer {
   }
 
   head("/quaich-http-demo/users/{username}/foo/{bar}") {
-    complete("OK")
+    complete(HTTPStatus.OK)
   }
 
   options("/quaich-http-demo/users/{username}/foo/{bar}") {
-    complete("OK")
+    complete(HTTPStatus.ImATeapot)
   }
 
   delete("/quaich-http-demo/users/{username}/foo/{bar}") {
