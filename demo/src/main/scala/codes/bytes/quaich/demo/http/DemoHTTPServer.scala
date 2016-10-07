@@ -41,22 +41,21 @@ class DemoHTTPServer {
     complete("OK")
   }
 
-  val x = post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+  post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
     println(s"Post Body: $body")
-    complete("OK")
+    complete(200)
   }
 
-  put[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+  put[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
     println(s"Put Body: $body")
-    complete("OK")
+    val response = TestObject("OMG", "WTF")
+    complete(response)
   }
 
   patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
     println(s"Patch Body: $body")
     complete("OK")
   }
-
-  println(routes)
 }
 
 // vim: set ts=2 sw=2 sts=2 et:

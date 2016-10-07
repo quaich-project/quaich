@@ -274,11 +274,6 @@ class TestHTTPServer {
     println(s"Patch Body: $body")
     complete("OK")
   }
-
-  println(routes)
-
-
-  println(routes)
 }
 
 case class TestObject(foo: String, bar: String)
