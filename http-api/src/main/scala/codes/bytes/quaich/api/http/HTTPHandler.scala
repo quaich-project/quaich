@@ -38,11 +38,12 @@ trait HTTPHandler {
   def routeRequest(): LambdaHTTPResponse = {
     routes.get(HTTPMethod(request.httpMethod) → request.resource) match {
       case Some(handler) ⇒ handler()
-      case None ⇒ LambdaHTTPResponse(JNull, statusCode = 404)
+      case None ⇒ LambdaHTTPResponse(statusCode = 404)
 
     }
-    LambdaHTTPResponse(JString("OK"))
   }
+
+  def complete(magnet: HTTPResponseMagnet): magnet.Result = magnet()
 
   def addRoute(method: HTTPMethod, route: String, handler: HTTPRoute[_]): Unit = {
     routeBuilder += (method → route) → handler

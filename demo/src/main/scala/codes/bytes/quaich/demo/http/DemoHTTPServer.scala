@@ -26,34 +26,34 @@ import org.json4s._
 class DemoHTTPServer {
 
   get("/quaich-http-demo/users/{username}/foo/{bar}") {
-    LambdaHTTPResponse(JString("OK"))
+    complete("OK")
   }
 
   head("/quaich-http-demo/users/{username}/foo/{bar}") {
-    LambdaHTTPResponse(JString("OK"))
+    complete("OK")
   }
 
   options("/quaich-http-demo/users/{username}/foo/{bar}") {
-    LambdaHTTPResponse(JString("OK"))
+    complete("OK")
   }
 
   delete("/quaich-http-demo/users/{username}/foo/{bar}") {
-    LambdaHTTPResponse(JString("OK"))
+    complete("OK")
   }
 
-  post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+  val x = post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
     println(s"Post Body: $body")
-    LambdaHTTPResponse(JString("OK"))
+    complete("OK")
   }
 
   put[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
     println(s"Put Body: $body")
-    LambdaHTTPResponse(JString("OK"))
+    complete("OK")
   }
 
   patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
     println(s"Patch Body: $body")
-    LambdaHTTPResponse(JString("OK"))
+    complete("OK")
   }
 
   println(routes)

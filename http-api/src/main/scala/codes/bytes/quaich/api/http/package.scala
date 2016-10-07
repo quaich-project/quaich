@@ -17,6 +17,7 @@
 
 package codes.bytes.quaich.api
 
+
 /*
  * Copyright (c) 2016 Brendan McAdams & Thomas Lockney 
  *
@@ -33,7 +34,7 @@ package codes.bytes.quaich.api
  * limitations under the License.
  *
  */
-package object http {
+package object http extends HTTPResponses with HTTPResponseMarshallers {
 
   import org.json4s._
 
@@ -62,11 +63,6 @@ package object http {
   case object OPTIONS extends HTTPMethod
   case object PATCH extends HTTPMethod
 
-  case class LambdaHTTPResponse(
-    body: JValue,
-    statusCode: Int = 200,
-    headers: Map[String, Any] = Map.empty[String, Any]
-  )
 
   case class LambdaHTTPRequest(
     resource: String,
