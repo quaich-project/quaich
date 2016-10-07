@@ -267,7 +267,7 @@ class TestHTTPServer {
   put[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
     println(s"Put Body: $body")
     val response = TestObject("OMG", "WTF")
-    complete(fromObject(response)(ClassResponseMarshaller))
+    complete(response)
   }
 
   patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
