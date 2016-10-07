@@ -68,12 +68,12 @@ package object http extends HTTPResponses with HTTPResponseMarshallers {
     resource: String,
     path: String, // todo - wire into an object that can extract vars
     httpMethod: String, // todo - in place validation
-    headers: Option[Map[String, String]],
-    queryStringParameters: Option[Map[String, String]],
-    pathParameters: Option[Map[String, String]],
-    stageVariables: Option[Map[String, String]],
     requestContext: LambdaHTTPRequestContext,
-    body: JObject
+    body: JObject,
+    headers: Map[String, String] = Map.empty,
+    queryStringParameters: Map[String, String] = Map.empty,
+    pathParameters: Map[String, String] = Map.empty,
+    stageVariables: Map[String, String] = Map.empty
   )
 
   case class CognitoData(

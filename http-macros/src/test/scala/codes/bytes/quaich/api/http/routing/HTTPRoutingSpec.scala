@@ -265,7 +265,7 @@ class TestHTTPServer {
   }
 
   put[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
-    println(s"Put Body: $body")
+    println(s"Username: ${request.pathParameters("username")}")
     val response = TestObject("OMG", "WTF")
     complete(response)
   }
