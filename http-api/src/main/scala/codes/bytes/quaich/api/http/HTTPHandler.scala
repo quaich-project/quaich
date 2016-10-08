@@ -27,7 +27,7 @@ trait HTTPHandler {
   protected val request: LambdaHTTPRequest
   protected val context: LambdaContext
 
-  protected val ViewArgsRE = """\{\w+\}""".r
+  protected val ViewArgsRE = """\{[\w0-9_\-+]+\}""".r
 
   protected val routeBuilder =
     Map.newBuilder[(HTTPMethod, String), HTTPRoute[_]]
