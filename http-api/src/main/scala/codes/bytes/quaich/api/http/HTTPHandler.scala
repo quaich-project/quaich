@@ -34,7 +34,6 @@ trait HTTPHandler {
 
   lazy val routes = routeBuilder.result
 
-  // TODO - Magnet pattern for response handling...
   def routeRequest(): LambdaHTTPResponse = {
     routes.get(HTTPMethod(request.httpMethod) → request.resource) match {
       case Some(handler) ⇒ handler()

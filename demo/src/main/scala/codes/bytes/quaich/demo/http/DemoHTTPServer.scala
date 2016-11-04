@@ -41,13 +41,18 @@ class DemoHTTPServer {
     complete("OK")
   }
 
-  post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
-    println(s"Post Body: $body")
-    complete(200)
+  post[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
+    request.pathParameters.get("username") match {
+      case Some(username) ⇒
+        // create user in database blah blah blah
+        complete((HTTPStatus.Created, s"Created user $username."))
+      case None ⇒
+        complete(HTTPStatus.BadRequest)
+    }
   }
 
-  put[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
-    println(s"Put Body: $body")
+  put[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+    println(s"Put Body: $body Path Parameters: ${request.pathParameters}")
     val response = TestObject("OMG", "WTF")
     complete(response)
   }
