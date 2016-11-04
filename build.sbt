@@ -6,16 +6,18 @@ val projectVersion        = "0.1-SNAPSHOT"
 val projectOrg            = "codes.bytes"
 val scalacticVersion      = "3.0.0"
 val scalatestVersion      = "3.0.0"
-val json4sVersion         = "3.4.1"
+val json4sVersion         = "3.5.0.RC1"
 val commonsIOVersion      = "2.4"
-val awsLambdaVersion      = "1.0.0"
-val metaParadiseVersion   = "3.0.0-M5"
-val awsSdkVersion         = "1.10.77"
+val awsLambdaVersion      = "1.1.0"
+val awsLambdaEventsVer    = "1.3.0"
+val awsLambdaLog4jVer     = "1.0.0"
+val metaParadiseVersion   = "2.1.0"
+val awsSdkVersion         = "1.11.52"
 
 lazy val commonSettings = Seq(
   organization := projectOrg,
   version := projectVersion,
-  scalaVersion := "2.11.8",
+  scalaVersion := "2.12.0",
   retrieveManaged := true,
   libraryDependencies ++= Seq(
     "org.scalactic" %% "scalactic" % scalacticVersion,
@@ -38,7 +40,7 @@ lazy val macroSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-reflect" % scalaVersion.value
   ),
-  addCompilerPlugin("org.scalameta" % "paradise" % metaParadiseVersion cross CrossVersion.full),
+  addCompilerPlugin("org.scalamacros" % "paradise" % metaParadiseVersion cross CrossVersion.full),
   scalacOptions ++= Seq(
     "-Xplugin-require:macroparadise"/*,
     "-Ymacro-debug-lite"*/
@@ -106,7 +108,8 @@ lazy val api = (project in file("api")).
     name := "quaich-api",
     libraryDependencies ++= Seq(
       "com.amazonaws" % "aws-lambda-java-core" % awsLambdaVersion,
-      "com.amazonaws" % "aws-lambda-java-events" % awsLambdaVersion
+      "com.amazonaws" % "aws-lambda-java-events" % awsLambdaEventsVer,
+      "com.amazonaws" % "aws-lambda-java-log4j" % awsLambdaLog4jVer
     )
   ).dependsOn(util)
 
