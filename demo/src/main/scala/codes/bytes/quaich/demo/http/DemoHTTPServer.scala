@@ -25,23 +25,23 @@ import org.json4s._
 @LambdaHTTPApi
 class DemoHTTPServer {
 
-  get("/quaich-http-demo/users/{username}/foo/{bar}") {
+  get("/quaich-http-demo/users/{username}/foo/{bar}") { request =>
     complete("OK")
   }
 
-  head("/quaich-http-demo/users/{username}/foo/{bar}") {
+  head("/quaich-http-demo/users/{username}/foo/{bar}") { request =>
     complete(HTTPStatus.OK)
   }
 
-  options("/quaich-http-demo/users/{username}/foo/{bar}") {
+  options("/quaich-http-demo/users/{username}/foo/{bar}") { request =>
     complete(HTTPStatus.ImATeapot)
   }
 
-  delete("/quaich-http-demo/users/{username}/foo/{bar}") {
+  delete("/quaich-http-demo/users/{username}/foo/{bar}") { request =>
     complete("OK")
   }
 
-  post[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
+  post[TestObject]("/quaich-http-demo/users/{username}") { (body, request) ⇒
     request.pathParameters.get("username") match {
       case Some(username) ⇒
         // create user in database blah blah blah
@@ -51,13 +51,13 @@ class DemoHTTPServer {
     }
   }
 
-  put[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+  put[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { (body, request) ⇒
     println(s"Put Body: $body Path Parameters: ${request.pathParameters}")
     val response = TestObject("OMG", "WTF")
     complete(response)
   }
 
-  patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+  patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { (body, request) ⇒
     println(s"Patch Body: $body")
     complete("OK")
   }

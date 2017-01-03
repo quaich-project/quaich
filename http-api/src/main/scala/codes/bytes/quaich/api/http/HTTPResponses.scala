@@ -77,6 +77,7 @@ trait HTTPResponses {
       }
     }
 
+  def complete(magnet: HTTPResponseMagnet): magnet.Result = magnet()
 
   sealed abstract class StatusCode(val httpStatus: Int)
 
