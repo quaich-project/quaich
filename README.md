@@ -13,11 +13,9 @@ AWS Lambda is an interesting emerging platform for “serverless” programming.
 quaich (pronounced ‘quake’) is a Scala microframework, inspired by the Python based [chalice](https://github.com/awslabs/chalice) released by Amazon recently. The concept is simple, single file applications that can receive and handle the JSON events pushed by the Lambda system. Through clever tricks with macros, etc. we provide an easy model for defining your routes files and even parsing custom variables.
 
 # Authors
-[Thomas Lockney](https://github.com/tlockney)*
 
-[Brendan McAdams](https://github.com/bwmcadams)
-
-\* Original idea by Thomas
+ * [Brendan McAdams](https://github.com/bwmcadams)
+ * [Thomas Lockney](https://github.com/tlockney) (mostly just an _idea_ guy) 
 
 # TODO
 
