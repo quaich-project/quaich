@@ -36,15 +36,15 @@ package codes.bytes.quaich.api.http
  */
 package object macros {
 
-  def get(route: String)(block: LambdaHTTPResponse): Any = macro get_impl
+  def get(route: String)(block: LambdaHTTPRequest => LambdaHTTPResponse): Any = macro get_impl
 
-  def get_impl(c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[LambdaHTTPResponse]): c.Expr[Any] = {
+  def get_impl(c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[LambdaHTTPRequest => LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
 
     val obj = q"""
     val handler = new codes.bytes.quaich.api.http.routing.HTTPGetRoute {
       def apply(): LambdaHTTPResponse = {
-        $block
+        $block(request)
       }
     }
 
@@ -54,15 +54,15 @@ package object macros {
     c.Expr[Any](obj)
   }
 
-  def head(route: String)(block: LambdaHTTPResponse): Any = macro head_impl
+  def head(route: String)(block: LambdaHTTPRequest => LambdaHTTPResponse): Any = macro head_impl
 
-  def head_impl(c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[LambdaHTTPResponse]): c.Expr[Any] = {
+  def head_impl(c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[LambdaHTTPRequest => LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
 
     val obj = q"""
     val handler = new codes.bytes.quaich.api.http.routing.HTTPHeadRoute {
       def apply(): LambdaHTTPResponse = {
-        $block
+        $block(request)
       }
     }
 
@@ -73,16 +73,16 @@ package object macros {
   }
 
 
-  def options(route: String)(block: LambdaHTTPResponse): Any = macro options_impl
+  def options(route: String)(block: LambdaHTTPRequest => LambdaHTTPResponse): Any = macro options_impl
 
 
-  def options_impl(c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[LambdaHTTPResponse]): c.Expr[Any] = {
+  def options_impl(c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[LambdaHTTPRequest => LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
 
     val obj = q"""
     val handler = new codes.bytes.quaich.api.http.routing.HTTPOptionsRoute {
       def apply(): LambdaHTTPResponse = {
-        $block
+        $block(request)
       }
     }
 
@@ -92,9 +92,9 @@ package object macros {
     c.Expr[Any](obj)
   }
 
-  def post[T <: Product](route: String)(block: T => LambdaHTTPResponse): Any = macro post_impl[T]
+  def post[T <: Product](route: String)(block: (T, LambdaHTTPRequest) => LambdaHTTPResponse): Any = macro post_impl[T]
 
-  def post_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[T ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
+  def post_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[(T,LambdaHTTPRequest) ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
 
     val tpe = weakTypeOf[T]
@@ -106,7 +106,7 @@ package object macros {
     val handler = new codes.bytes.quaich.api.http.routing.HTTPPostRoute[$tpe] {
       def apply(): LambdaHTTPResponse = {
         val body = request.body.extract[$tpe]
-        $block(body)
+        $block(body, request)
       }
     }
 
@@ -116,9 +116,9 @@ package object macros {
     c.Expr[Any](obj)
   }
 
-  def put[T <: Product](route: String)(block: T => LambdaHTTPResponse): Any = macro put_impl[T]
+  def put[T <: Product](route: String)(block: (T, LambdaHTTPRequest) => LambdaHTTPResponse): Any = macro put_impl[T]
 
-  def put_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[T ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
+  def put_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[(T,LambdaHTTPRequest) ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
 
     val tpe = weakTypeOf[T]
@@ -130,7 +130,7 @@ package object macros {
     val handler = new codes.bytes.quaich.api.http.routing.HTTPPutRoute[$tpe] {
       def apply(): LambdaHTTPResponse = {
         val body = request.body.extract[$tpe]
-        $block(body)
+        $block(body, request)
       }
     }
 
@@ -140,10 +140,10 @@ package object macros {
     c.Expr[Any](obj)
   }
 
-  def deleteWithBody[T <: Product](route: String)(block: T => LambdaHTTPResponse): Any = macro delete_with_body_impl[T]
+  def deleteWithBody[T <: Product](route: String)(block: (T, LambdaHTTPRequest) => LambdaHTTPResponse): Any = macro delete_with_body_impl[T]
 
 
-  def delete_with_body_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[T ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
+  def delete_with_body_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[(T,LambdaHTTPRequest) ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
 
     val tpe = weakTypeOf[T]
@@ -152,7 +152,7 @@ package object macros {
         val handler = new codes.bytes.quaich.api.http.routing.HTTPPostRoute[$tpe] {
           def apply(): LambdaHTTPResponse = {
             val body = request.body.extract[$tpe]
-            $block(body)
+            $block(body, request)
           }
         }
 
@@ -162,9 +162,9 @@ package object macros {
     c.Expr[Any](obj)
   }
 
-  def delete(route: String)(block: LambdaHTTPResponse): Any = macro delete_typeless_impl
+  def delete(route: String)(block: LambdaHTTPRequest => LambdaHTTPResponse): Any = macro delete_typeless_impl
 
-  def delete_typeless_impl(c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[LambdaHTTPResponse]): c.Expr[Any] = {
+  def delete_typeless_impl(c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[LambdaHTTPRequest => LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
 
 /*
@@ -178,7 +178,7 @@ package object macros {
     val obj = q"""
         val handler = new codes.bytes.quaich.api.http.routing.HTTPDeleteRoute[Nothing] {
           def apply(): LambdaHTTPResponse = {
-            $block
+            $block(request)
           }
         }
 
@@ -188,9 +188,9 @@ package object macros {
     c.Expr[Any](obj)
   }
 
-  def patch[T <: Product](route: String)(block: T => LambdaHTTPResponse): Any = macro patch_impl[T]
+  def patch[T <: Product](route: String)(block: (T, LambdaHTTPRequest) => LambdaHTTPResponse): Any = macro patch_impl[T]
 
-  def patch_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[T ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
+  def patch_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[(T, LambdaHTTPRequest) ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
 
     val tpe = weakTypeOf[T]
@@ -202,7 +202,7 @@ package object macros {
     val handler = new codes.bytes.quaich.api.http.routing.HTTPPostRoute[$tpe] {
       def apply(): LambdaHTTPResponse = {
         val body = request.body.extract[$tpe]
-        $block(body)
+        $block(body, request)
       }
     }
 

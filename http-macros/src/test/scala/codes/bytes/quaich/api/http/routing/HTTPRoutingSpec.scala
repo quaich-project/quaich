@@ -243,34 +243,34 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
 @LambdaHTTPApi
 class TestHTTPServer {
 
-  get("/quaich-http-demo/users/{username}/foo/{bar}") {
+  get("/quaich-http-demo/users/{username}/foo/{bar}") { request =>
     complete("OK")
   }
 
-  head("/quaich-http-demo/users/{username}/foo/{bar}") {
+  head("/quaich-http-demo/users/{username}/foo/{bar}") { request =>
     complete(HTTPStatus.OK)
   }
 
-  options("/quaich-http-demo/users/{username}/foo/{bar}") {
+  options("/quaich-http-demo/users/{username}/foo/{bar}") { request =>
     complete(HTTPStatus.ImATeapot)
   }
 
-  delete("/quaich-http-demo/users/{username}/foo/{bar}") {
+  delete("/quaich-http-demo/users/{username}/foo/{bar}") {request =>
     complete("OK")
   }
 
-  post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+  post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { (body, request) ⇒
     println(s"Post Body: $body")
     complete(200)
   }
 
-  put[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
+  put[TestObject]("/quaich-http-demo/users/{username}") { (body, request) ⇒
     println(s"Username: ${request.pathParameters("username")}")
     val response = TestObject("OMG", "WTF")
     complete(response)
   }
 
-  patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
+  patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { (body, request) ⇒
     println(s"Patch Body: $body")
     complete("OK")
   }
