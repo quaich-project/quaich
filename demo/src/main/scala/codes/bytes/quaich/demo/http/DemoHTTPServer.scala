@@ -41,11 +41,15 @@ class DemoHTTPServer {
     complete("OK")
   }
 
+  postX("/quaich-http-demo/users/{username}/foo/{bar}") { (body: TestObject, username: String, bar: String) ⇒
+    complete((HTTPStatus.Created, s"Created user $username."))
+  }
+
   post[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
     request.pathParameters.get("username") match {
-      case Some(username) ⇒
+      case Some(user) ⇒
         // create user in database blah blah blah
-        complete((HTTPStatus.Created, s"Created user $username."))
+        complete((HTTPStatus.Created, s"Created user $user."))
       case None ⇒
         complete(HTTPStatus.BadRequest)
     }

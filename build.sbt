@@ -11,13 +11,13 @@ val commonsIOVersion      = "2.4"
 val awsLambdaVersion      = "1.1.0"
 val awsLambdaEventsVer    = "1.3.0"
 val awsLambdaLog4jVer     = "1.0.0"
-val metaParadiseVersion   = "2.1.0"
+val metaParadiseVersion   = "3.0.0-M5"
 val awsSdkVersion         = "1.11.52"
 
 lazy val commonSettings = Seq(
   organization := projectOrg,
   version := projectVersion,
-  scalaVersion := "2.12.0",
+  scalaVersion := "2.11.8",
   retrieveManaged := true,
   libraryDependencies ++= Seq(
     "org.scalactic" %% "scalactic" % scalacticVersion,
@@ -30,7 +30,8 @@ lazy val commonSettings = Seq(
     "UTF-8",
     "-target:jvm-1.8",
     "-deprecation",
-    "-language:_"
+    "-language:_"/*,
+    "-Ymacro-debug-lite"*/
   ),
   fork in (Test, run) := true
 )
@@ -40,7 +41,7 @@ lazy val macroSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scala-lang" % "scala-reflect" % scalaVersion.value
   ),
-  addCompilerPlugin("org.scalamacros" % "paradise" % metaParadiseVersion cross CrossVersion.full),
+  addCompilerPlugin("org.scalameta" % "paradise" % metaParadiseVersion cross CrossVersion.full),
   scalacOptions ++= Seq(
     "-Xplugin-require:macroparadise"/*,
     "-Ymacro-debug-lite"*/

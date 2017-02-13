@@ -111,7 +111,7 @@ trait HTTPResponses {
     case object NotAcceptable extends StatusCode(406)
     case object RequestTimeout extends StatusCode(408)
     // "Unavailable for Legal Reasons"
-    case object DoublePlusUngood extends StatusCode(415)
+    case object DoublePlusUngood extends StatusCode(451)
 
     case object ImATeapot extends StatusCode(418)
   }

@@ -36,6 +36,19 @@ package codes.bytes.quaich.api.http
  */
 package object macros {
 
+  type RouteBlock[T <: Product] =  T ⇒ LambdaHTTPResponse
+  type RouteXBlock[T <: Product] =  (T, String*) ⇒ LambdaHTTPResponse
+
+  implicit def route1ArgToRouteX[T <: Product](
+    block: (T, String) ⇒ LambdaHTTPResponse
+  ): RouteXBlock[T] = (body, args) ⇒ block(body, args(0))
+
+  implicit def route2ArgToRouteX[T <: Product](
+    block: (T, String, String) ⇒ LambdaHTTPResponse
+  ): RouteXBlock[T] = (body, args) ⇒ block(body, args(0), args(1))
+
+
+
   def get(route: String)(block: LambdaHTTPResponse): Any = macro get_impl
 
   def get_impl(c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[LambdaHTTPResponse]): c.Expr[Any] = {
@@ -92,7 +105,33 @@ package object macros {
     c.Expr[Any](obj)
   }
 
-  def post[T <: Product](route: String)(block: T => LambdaHTTPResponse): Any = macro post_impl[T]
+  def postX[T <: Product](route: String)(block: (T, String*) => LambdaHTTPResponse): Any =
+    macro postX_impl[T]
+
+
+  def postX_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[(T, String*) ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
+    import c.universe._
+
+    val tpe = weakTypeOf[T]
+
+    if (tpe =:= typeOf[Nothing])
+      c.abort(c.enclosingPosition, "POST routes require a case class argument describing how the JSON body should be deserialized. Please call it as `post[<TYPE>](<route>) ...`")
+
+    val obj = q"""
+    val handler = new codes.bytes.quaich.api.http.routing.HTTPPostRoute[$tpe] {
+      def apply(): LambdaHTTPResponse = {
+        val body = request.body.extract[$tpe]
+        $block(body)
+      }
+    }
+
+    addRoute(codes.bytes.quaich.api.http.POST, $route, handler)
+    """
+
+    c.Expr[Any](obj)
+  }
+
+  def post[T <: Product](route: String)(block: RouteBlock[T]): Any = macro post_impl[T]
 
   def post_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[T ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
@@ -116,7 +155,7 @@ package object macros {
     c.Expr[Any](obj)
   }
 
-  def put[T <: Product](route: String)(block: T => LambdaHTTPResponse): Any = macro put_impl[T]
+  def put[T <: Product](route: String)(block: RouteBlock[T]): Any = macro put_impl[T]
 
   def put_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[T ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
@@ -140,7 +179,7 @@ package object macros {
     c.Expr[Any](obj)
   }
 
-  def deleteWithBody[T <: Product](route: String)(block: T => LambdaHTTPResponse): Any = macro delete_with_body_impl[T]
+  def deleteWithBody[T <: Product](route: String)(block: RouteBlock[T]): Any = macro delete_with_body_impl[T]
 
 
   def delete_with_body_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[T ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
@@ -188,7 +227,7 @@ package object macros {
     c.Expr[Any](obj)
   }
 
-  def patch[T <: Product](route: String)(block: T => LambdaHTTPResponse): Any = macro patch_impl[T]
+  def patch[T <: Product](route: String)(block: RouteBlock[T]): Any = macro patch_impl[T]
 
   def patch_impl[T <: Product : c.WeakTypeTag](c: scala.reflect.macros.whitebox.Context)(route: c.Expr[String])(block: c.Expr[T ⇒ LambdaHTTPResponse]): c.Expr[Any] = {
     import c.universe._
