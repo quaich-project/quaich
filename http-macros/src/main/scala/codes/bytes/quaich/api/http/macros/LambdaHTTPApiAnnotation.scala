@@ -43,13 +43,11 @@ object LambdaHTTPApi {
         //val baseName = name.decodedName.toString
         //val handlerName = TermName(s"$baseName$$RequestHandler")
         //val handlerName = name.toTermName
+
         val handlerName = name.asInstanceOf[TypeName].toTermName
 
-        val cls = q"""
-        $mods class $name[..$tparams](
-            val request: codes.bytes.quaich.api.http.LambdaHTTPRequest,
-            val context: codes.bytes.quaich.api.http.LambdaContext
-          )
+        val obj = q"""
+        $mods object $handlerName
           extends ..$parents
           with codes.bytes.quaich.api.http.HTTPHandler {
             import org.json4s.jackson.JsonMethods._
@@ -63,13 +61,11 @@ object LambdaHTTPApi {
           }
         """
 
-        val obj = q"""
-        object $handlerName extends codes.bytes.quaich.api.http.HTTPApp {
-          def newHandler(
-            request: codes.bytes.quaich.api.http.LambdaHTTPRequest,
-            context: codes.bytes.quaich.api.http.LambdaContext
-          ): codes.bytes.quaich.api.http.HTTPHandler =
-            new $name(request, context)
+
+        val cls = q"""
+        class $name[..$tparams] extends codes.bytes.quaich.api.http.HTTPApp {
+          def newHandler: codes.bytes.quaich.api.http.HTTPHandler =
+            ${name.asInstanceOf[TypeName].toTermName}
 
 
         }

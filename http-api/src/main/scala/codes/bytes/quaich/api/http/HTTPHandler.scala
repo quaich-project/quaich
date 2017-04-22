@@ -17,15 +17,10 @@
 
 package codes.bytes.quaich.api.http
 
-import codes.bytes.quaich.api.http._
 import codes.bytes.quaich.api.http.routing.HTTPRoute
-import org.json4s._
 
 
 trait HTTPHandler {
-
-  protected val request: LambdaHTTPRequest
-  protected val context: LambdaContext
 
   protected val ViewArgsRE = """\{[\w0-9_\-+]+\}""".r
 
@@ -34,9 +29,9 @@ trait HTTPHandler {
 
   lazy val routes = routeBuilder.result
 
-  def routeRequest(): LambdaHTTPResponse = {
+  def routeRequest(request: LambdaHTTPRequest, context: LambdaContext): LambdaHTTPResponse = {
     routes.get(HTTPMethod(request.httpMethod) → request.resource) match {
-      case Some(handler) ⇒ handler()
+      case Some(handler) ⇒ handler(LambdaRequestContext(request, context))
       case None ⇒ LambdaHTTPResponse(statusCode = 404)
 
     }

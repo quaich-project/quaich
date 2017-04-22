@@ -11,13 +11,13 @@ val commonsIOVersion      = "2.4"
 val awsLambdaVersion      = "1.1.0"
 val awsLambdaEventsVer    = "1.3.0"
 val awsLambdaLog4jVer     = "1.0.0"
-val metaParadiseVersion   = "3.0.0-M5"
+val metaParadiseVersion   = "3.0.0-M8"
 val awsSdkVersion         = "1.11.52"
 
 lazy val commonSettings = Seq(
   organization := projectOrg,
   version := projectVersion,
-  scalaVersion := "2.11.8",
+  scalaVersion := "2.12.2",
   retrieveManaged := true,
   libraryDependencies ++= Seq(
     "org.scalactic" %% "scalactic" % scalacticVersion,
@@ -62,11 +62,15 @@ lazy val root = (project in file(".")).
 lazy val demo = (project in file("demo")).
   settings(commonSettings: _*).
   settings(macroSettings: _*).
+  settings(proguardSettings: _*).
   settings(
     name := "quaich-demo",
     lambdaName := Some("quaich-http-demo"),
-    handlerName := Some("codes.bytes.quaich.demo.http.DemoHTTPServer$::handleRequest"),
-    s3Bucket := Some("quaich-demo"),
+    handlerName := Some("codes.bytes.quaich.demo.http.DemoHTTPServer::handleRequest"),
+    s3Bucket := Some("com.pdolega.lambda.quaich-demo"),
+    awsLambdaMemory := Some(192),
+    region := Some("eu-west-1"),
+
     publishArtifact in (Compile, packageDoc) := false
   ).
   dependsOn(http).

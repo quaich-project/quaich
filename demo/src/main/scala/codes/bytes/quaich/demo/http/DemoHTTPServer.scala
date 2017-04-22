@@ -19,34 +19,38 @@ package codes.bytes.quaich.demo.http
 import codes.bytes.quaich.api.http._
 import codes.bytes.quaich.api.http.macros._
 import codes.bytes.quaich.demo.http.model.TestObject
-import org.json4s._
 
 
 @LambdaHTTPApi
 class DemoHTTPServer {
 
-  get("/quaich-http-demo/users/{username}/foo/{bar}") {
+  // this thing works!
+  get("/quaich-http-demo/hello") { requestContext =>
+    complete("Awesome. First small success!")
+  }
+
+  get("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext =>
     complete("OK")
   }
 
-  head("/quaich-http-demo/users/{username}/foo/{bar}") {
+  head("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext =>
     complete(HTTPStatus.OK)
   }
 
-  options("/quaich-http-demo/users/{username}/foo/{bar}") {
+  options("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext =>
     complete(HTTPStatus.ImATeapot)
   }
 
-  delete("/quaich-http-demo/users/{username}/foo/{bar}") {
+  delete("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext =>
     complete("OK")
   }
 
-  postX("/quaich-http-demo/users/{username}/foo/{bar}") { (body: TestObject, username: String, bar: String) ⇒
+  postX[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { (requestWithBody: LambdaRequestBody[TestObject], username: String, bar: String) =>
     complete((HTTPStatus.Created, s"Created user $username."))
   }
 
-  post[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
-    request.pathParameters.get("username") match {
+  post[TestObject]("/quaich-http-demo/users/{username}") { requestWithBody =>
+    requestWithBody.request.pathParameters.get("username") match {
       case Some(user) ⇒
         // create user in database blah blah blah
         complete((HTTPStatus.Created, s"Created user $user."))
@@ -55,8 +59,8 @@ class DemoHTTPServer {
     }
   }
 
-  put[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
-    println(s"Put Body: $body Path Parameters: ${request.pathParameters}")
+  put[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { requestWithBody =>
+    println(s"Put Body: ${requestWithBody.body} Path Parameters: ${requestWithBody.request.pathParameters}")
     val response = TestObject("OMG", "WTF")
     complete(response)
   }
@@ -66,5 +70,3 @@ class DemoHTTPServer {
     complete("OK")
   }
 }
-
-// vim: set ts=2 sw=2 sts=2 et:
