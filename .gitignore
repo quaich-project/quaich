@@ -21,3 +21,5 @@ project/plugins/project/
 *.swp
 *.swo
 idea/
+
+env_vars.sh

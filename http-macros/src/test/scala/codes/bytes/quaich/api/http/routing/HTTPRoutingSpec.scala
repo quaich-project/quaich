@@ -209,8 +209,8 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       val req = json.extract[LambdaHTTPRequest]
 
       val server = new TestHTTPServer
-
-      val response = server.routeRequest(req, null)
+      val handler = server.newHandler
+      val response = handler.routeRequest(req, null)
 
       response must have (
         'statusCode (200),
@@ -225,8 +225,8 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
       val req = json.extract[LambdaHTTPRequest]
 
       val server = new TestHTTPServer
-
-      val response = server.routeRequest(req, null)
+      val handler = server.newHandler
+      val response = handler.routeRequest(req, null)
 
       response must have (
         'statusCode (200),

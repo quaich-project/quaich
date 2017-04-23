@@ -62,7 +62,6 @@ lazy val root = (project in file(".")).
 lazy val demo = (project in file("demo")).
   settings(commonSettings: _*).
   settings(macroSettings: _*).
-  settings(proguardSettings: _*).
   settings(
     name := "quaich-demo",
     lambdaName := Some("quaich-http-demo"),
