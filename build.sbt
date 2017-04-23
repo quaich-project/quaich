@@ -1,4 +1,4 @@
-//onLoad in Global := ((s: State) => { "updateIdea" :: s}) compose (onLoad in Global).value
+import sbt.Keys.publishTo
 
 name := "quaich"
 
@@ -33,7 +33,10 @@ lazy val commonSettings = Seq(
     "-language:_"/*,
     "-Ymacro-debug-lite"*/
   ),
-  fork in (Test, run) := true
+  fork in (Test, run) := true,
+
+  bintrayOrganization := Some("quaich"),
+  licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 )
 
 
@@ -53,11 +56,57 @@ lazy val root = (project in file(".")).
   settings(
     name := "quaich",
     organization := projectOrg,
-    version := projectVersion
+    version := projectVersion,
+    publishArtifact := false,
+    publishTo := Some(Resolver.file("Unused transient repository", file("target/unusedrepo"))),
+    bintrayRelease := {}
   ).
   aggregate(
     util, http, httpMacros, httpApi, api, demo
   )
+
+lazy val util = (project in file("util")).
+  settings(commonSettings: _*).
+  settings(
+    name := "quaich-util",
+    libraryDependencies ++= Seq(
+    )
+  )
+
+lazy val api = (project in file("api")).
+  settings(commonSettings: _*).
+  settings(
+    name := "quaich-api",
+    libraryDependencies ++= Seq(
+      "com.amazonaws" % "aws-lambda-java-core" % awsLambdaVersion,
+      "com.amazonaws" % "aws-lambda-java-events" % awsLambdaEventsVer,
+      "com.amazonaws" % "aws-lambda-java-log4j" % awsLambdaLog4jVer
+    )
+  ).dependsOn(util)
+
+lazy val httpApi = (project in file("http-api")).
+  settings(commonSettings: _*).
+  settings(
+    name := "quaich-http-api",
+    libraryDependencies ++= Seq(
+    )
+  ).dependsOn(api)
+
+lazy val httpMacros = (project in file("http-macros")).
+  settings(commonSettings: _*).
+  settings(macroSettings: _*).
+  settings(
+    name := "quaich-http-macros"
+  ).
+  dependsOn(httpApi)
+
+lazy val http = (project in file("http")).
+  settings(commonSettings: _*).
+  settings(
+    name := "quaich-http"
+  ).
+  dependsOn(httpMacros, httpApi).
+  aggregate(httpMacros, httpApi)
 
 lazy val demo = (project in file("demo")).
   settings(commonSettings: _*).
@@ -75,54 +124,10 @@ lazy val demo = (project in file("demo")).
   dependsOn(http).
   enablePlugins(AWSLambdaPlugin)
 
-lazy val http = (project in file("http")).
-  settings(commonSettings: _*).
-  settings(
-    name := "quaich-http"
-  ).
-  dependsOn(httpMacros, httpApi).
-  aggregate(httpMacros, httpApi)
-
-lazy val httpMacros = (project in file("http-macros")).
-  settings(commonSettings: _*).
-  settings(macroSettings: _*).
-  settings(
-    name := "quaich-http-macros"
-  ).
-  dependsOn(httpApi)
-
-
-lazy val httpApi = (project in file("http-api")).
-  settings(commonSettings: _*).
-  settings(
-    name := "quaich-http-api",
-    libraryDependencies ++= Seq(
-    )
-  ).dependsOn(api)
-
 lazy val httpMetadataPlugin = (project in file("http-metadata-plugin")).
   settings(commonSettings: _*).
   settings(
     name := "quaich-http-metadata-plugin"
-  )
-
-lazy val api = (project in file("api")).
-  settings(commonSettings: _*).
-  settings(
-    name := "quaich-api",
-    libraryDependencies ++= Seq(
-      "com.amazonaws" % "aws-lambda-java-core" % awsLambdaVersion,
-      "com.amazonaws" % "aws-lambda-java-events" % awsLambdaEventsVer,
-      "com.amazonaws" % "aws-lambda-java-log4j" % awsLambdaLog4jVer
-    )
-  ).dependsOn(util)
-
-lazy val util = (project in file("util")).
-  settings(commonSettings: _*).
-  settings(
-    name := "quaich-util",
-    libraryDependencies ++= Seq(
-    )
   )
 
 
