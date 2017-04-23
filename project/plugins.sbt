@@ -9,4 +9,4 @@ addSbtPlugin("com.dancingrobot84" % "sbt-idea-plugin" % "0.4.0")
 
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3")
 
-addSbtPlugin("codes.bytes" % "sbt-quartercask-lambda" % "0.1-SNAPSHOT")
+addSbtPlugin("codes.bytes" % "sbt-quartercask-lambda" % "0.0.1-SNAPSHOT")

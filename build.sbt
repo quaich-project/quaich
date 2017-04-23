@@ -2,7 +2,7 @@
 
 name := "quaich"
 
-val projectVersion        = "0.1-SNAPSHOT"
+val projectVersion        = "0.0.1-SNAPSHOT"
 val projectOrg            = "codes.bytes"
 val scalacticVersion      = "3.0.0"
 val scalatestVersion      = "3.0.0"
