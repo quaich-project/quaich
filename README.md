@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pdolega/quaich.svg)](https://travis-ci.org/pdolega/quaich)
+[![Build Status](https://travis-ci.org/quaich-serverless/quaich.svg)](https://travis-ci.org/quaich-serverless/quaich)
 
 # quaich
 
