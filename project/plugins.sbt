@@ -10,4 +10,4 @@ addSbtPlugin("com.dancingrobot84" % "sbt-idea-plugin" % "0.4.0")
 
 addSbtPlugin("me.lessis" % "bintray-sbt" % "0.3.0")
 
-addSbtPlugin("codes.bytes" % "sbt-quartercask-lambda" % "0.0.1-SNAPSHOT")
+addSbtPlugin("codes.bytes" % "sbt-quartercask-lambda" % "0.0.2-SNAPSHOT")

@@ -26,7 +26,7 @@ class DemoHTTPServer {
 
   // this thing works!
   get("/quaich-http-demo/hello") { requestContext =>
-    complete("Awesome. First small success!")
+    complete("Awesome. First small success! Version: 0.0.2")
   }
 
   get("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext =>

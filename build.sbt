@@ -2,10 +2,9 @@ import sbt.Keys.publishTo
 
 name := "quaich"
 
-val projectVersion        = "0.0.1-SNAPSHOT"
+val projectVersion        = "0.0.2-SNAPSHOT"
 val projectOrg            = "codes.bytes"
-val scalacticVersion      = "3.0.0"
-val scalatestVersion      = "3.0.0"
+
 val json4sVersion         = "3.5.0.RC1"
 val commonsIOVersion      = "2.4"
 val awsLambdaVersion      = "1.1.0"
@@ -20,8 +19,8 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.12.2",
   retrieveManaged := true,
   libraryDependencies ++= Seq(
-    "org.scalactic" %% "scalactic" % scalacticVersion,
-    "org.scalatest" %% "scalatest" % scalatestVersion % "test",
+    "org.scalactic" %% "scalactic" % "3.0.0",
+    "org.scalatest" %% "scalatest" % "3.0.0" % "test",
     "org.json4s" %% "json4s-jackson" % json4sVersion,
     "commons-io" % "commons-io" % commonsIOVersion
   ),
@@ -113,11 +112,12 @@ lazy val demo = (project in file("demo")).
   settings(macroSettings: _*).
   settings(
     name := "quaich-demo",
-    lambdaName := Some("quaich-http-demo"),
-    handlerName := Some("codes.bytes.quaich.demo.http.DemoHTTPServer::handleRequest"),
-    s3Bucket := Some("com.pdolega.lambda.quaich-demo"),
-    awsLambdaMemory := Some(192),
-    region := Some("eu-west-1"),
+    createAutomatically := true,
+
+    lambdaName := "quaich-http-demo",
+    handlerName := "codes.bytes.quaich.demo.http.DemoHTTPServer::handleRequest",
+    awsLambdaMemory := 192,
+    region := "eu-west-1",
 
     publishArtifact in (Compile, packageDoc) := false
   ).
