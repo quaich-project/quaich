@@ -21,7 +21,7 @@ import codes.bytes.quaich.api.http._
 
 trait HTTPRoute[T] {
 
-  def apply(): LambdaHTTPResponse
+  def apply(requestContext: LambdaRequestContext): LambdaHTTPResponse
 
 }
 

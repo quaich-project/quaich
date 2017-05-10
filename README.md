@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/quaich-serverless/quaich.svg)](https://travis-ci.org/quaich-serverless/quaich)
+
 # quaich
 
 A Scala “Serverless” Microframework for AWS Lambda, inspired by Amazon's Chalice (https://github.com/awslabs/chalice)
@@ -16,6 +18,7 @@ quaich (pronounced ‘quake’) is a Scala microframework, inspired by the Pytho
 
  * [Brendan McAdams](https://github.com/bwmcadams)
  * [Thomas Lockney](https://github.com/tlockney) (mostly just an _idea_ guy) 
+ * [Pawel (Paul) Dolega](https://github.com/pdolega) (only following up on the idea these 2 above initiated) 
 
 # TODO
 

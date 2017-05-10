@@ -1,27 +1,26 @@
-//onLoad in Global := ((s: State) => { "updateIdea" :: s}) compose (onLoad in Global).value
+import sbt.Keys.publishTo
 
 name := "quaich"
 
-val projectVersion        = "0.1-SNAPSHOT"
+val projectVersion        = "0.0.2-SNAPSHOT"
 val projectOrg            = "codes.bytes"
-val scalacticVersion      = "3.0.0"
-val scalatestVersion      = "3.0.0"
+
 val json4sVersion         = "3.5.0.RC1"
 val commonsIOVersion      = "2.4"
 val awsLambdaVersion      = "1.1.0"
 val awsLambdaEventsVer    = "1.3.0"
 val awsLambdaLog4jVer     = "1.0.0"
-val metaParadiseVersion   = "3.0.0-M5"
+val metaParadiseVersion   = "3.0.0-M8"
 val awsSdkVersion         = "1.11.52"
 
 lazy val commonSettings = Seq(
   organization := projectOrg,
   version := projectVersion,
-  scalaVersion := "2.11.8",
+  scalaVersion := "2.12.2",
   retrieveManaged := true,
   libraryDependencies ++= Seq(
-    "org.scalactic" %% "scalactic" % scalacticVersion,
-    "org.scalatest" %% "scalatest" % scalatestVersion % "test",
+    "org.scalactic" %% "scalactic" % "3.0.0",
+    "org.scalatest" %% "scalatest" % "3.0.0" % "test",
     "org.json4s" %% "json4s-jackson" % json4sVersion,
     "commons-io" % "commons-io" % commonsIOVersion
   ),
@@ -33,7 +32,10 @@ lazy val commonSettings = Seq(
     "-language:_"/*,
     "-Ymacro-debug-lite"*/
   ),
-  fork in (Test, run) := true
+  fork in (Test, run) := true,
+
+  bintrayOrganization := Some("quaich"),
+  licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 )
 
 
@@ -53,54 +55,21 @@ lazy val root = (project in file(".")).
   settings(
     name := "quaich",
     organization := projectOrg,
-    version := projectVersion
+    version := projectVersion,
+    publishArtifact := false,
+    publishTo := Some(Resolver.file("Unused transient repository", file("target/unusedrepo"))),
+    bintrayRelease := {}
   ).
   aggregate(
     util, http, httpMacros, httpApi, api, demo
   )
 
-lazy val demo = (project in file("demo")).
-  settings(commonSettings: _*).
-  settings(macroSettings: _*).
-  settings(
-    name := "quaich-demo",
-    lambdaName := Some("quaich-http-demo"),
-    handlerName := Some("codes.bytes.quaich.demo.http.DemoHTTPServer$::handleRequest"),
-    s3Bucket := Some("quaich-demo"),
-    publishArtifact in (Compile, packageDoc) := false
-  ).
-  dependsOn(http).
-  enablePlugins(AWSLambdaPlugin)
-
-lazy val http = (project in file("http")).
+lazy val util = (project in file("util")).
   settings(commonSettings: _*).
   settings(
-    name := "quaich-http"
-  ).
-  dependsOn(httpMacros, httpApi).
-  aggregate(httpMacros, httpApi)
-
-lazy val httpMacros = (project in file("http-macros")).
-  settings(commonSettings: _*).
-  settings(macroSettings: _*).
-  settings(
-    name := "quaich-http-macros"
-  ).
-  dependsOn(httpApi)
-
-
-lazy val httpApi = (project in file("http-api")).
-  settings(commonSettings: _*).
-  settings(
-    name := "quaich-http-api",
+    name := "quaich-util",
     libraryDependencies ++= Seq(
     )
-  ).dependsOn(api)
-
-lazy val httpMetadataPlugin = (project in file("http-metadata-plugin")).
-  settings(commonSettings: _*).
-  settings(
-    name := "quaich-http-metadata-plugin"
   )
 
 lazy val api = (project in file("api")).
@@ -114,12 +83,51 @@ lazy val api = (project in file("api")).
     )
   ).dependsOn(util)
 
-lazy val util = (project in file("util")).
+lazy val httpApi = (project in file("http-api")).
   settings(commonSettings: _*).
   settings(
-    name := "quaich-util",
+    name := "quaich-http-api",
     libraryDependencies ++= Seq(
     )
+  ).dependsOn(api)
+
+lazy val httpMacros = (project in file("http-macros")).
+  settings(commonSettings: _*).
+  settings(macroSettings: _*).
+  settings(
+    name := "quaich-http-macros"
+  ).
+  dependsOn(httpApi)
+
+lazy val http = (project in file("http")).
+  settings(commonSettings: _*).
+  settings(
+    name := "quaich-http"
+  ).
+  dependsOn(httpMacros, httpApi).
+  aggregate(httpMacros, httpApi)
+
+lazy val demo = (project in file("demo")).
+  settings(commonSettings: _*).
+  settings(macroSettings: _*).
+  settings(
+    name := "quaich-demo",
+    createAutomatically := true,
+
+    lambdaName := "quaich-http-demo",
+    handlerName := "codes.bytes.quaich.demo.http.DemoHTTPServer::handleRequest",
+    awsLambdaMemory := 192,
+    region := "eu-west-1",
+
+    publishArtifact in (Compile, packageDoc) := false
+  ).
+  dependsOn(http).
+  enablePlugins(AWSLambdaPlugin)
+
+lazy val httpMetadataPlugin = (project in file("http-metadata-plugin")).
+  settings(commonSettings: _*).
+  settings(
+    name := "quaich-http-metadata-plugin"
   )
 
 

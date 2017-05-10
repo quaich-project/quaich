@@ -19,7 +19,6 @@ package codes.bytes.quaich.api.http
 
 import java.io.{InputStream, OutputStream}
 
-import codes.bytes.quaich.api.http._
 import com.amazonaws.services.lambda.runtime.{Context, LambdaLogger, RequestStreamHandler}
 import org.apache.commons.io.IOUtils
 import org.json4s.jackson.JsonMethods._
@@ -27,38 +26,36 @@ import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization._
 import org.json4s.{NoTypeHints, _}
 
+import scala.io.Source
+
 trait HTTPApp extends RequestStreamHandler {
 
-  def newHandler(request: LambdaHTTPRequest, context: LambdaContext): HTTPHandler
-
+  def newHandler: HTTPHandler
 
   protected implicit val formats = Serialization.formats(NoTypeHints)
 
-  final override def handleRequest(
-    input: InputStream,
-    output: OutputStream,
-    context: Context): Unit = {
+  final override def handleRequest(input: InputStream, output: OutputStream, context: Context): Unit = {
 
     val ctx = new LambdaContext(context)
     val logger: LambdaLogger = ctx.logger
 
-    val json = parse(input)
+    val inputString = Source.fromInputStream(input).mkString
+    logger.log(s"Passed input is:\n${inputString}")
+    val json = parse(inputString)
 
     val req = json.extract[LambdaHTTPRequest]
 
     // route
     logger.log(s"Input: ${pretty(render(json))}")
 
-    val response = newHandler(req, ctx).routeRequest()
+    val response = newHandler.routeRequest(req, ctx)
 
     try {
       IOUtils.write(write(response), output)
     } catch {
       case e: Exception =>
-        logger.log("Error while writing response\n" + e.getMessage);
+        logger.log("Error while writing response\n" + e.getMessage)
         throw new IllegalStateException(e)
     }
   }
 }
-
-// vim: set ts=2 sw=2 sts=2 et:

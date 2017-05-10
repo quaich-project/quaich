@@ -17,16 +17,13 @@
 
 package codes.bytes.quaich.api.http.routing
 
-import org.scalatest.{MustMatchers, WordSpec}
-
 import codes.bytes.quaich.api.http._
 import codes.bytes.quaich.api.http.macros._
-
-import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization._
 import org.json4s.{NoTypeHints, _}
+import org.scalatest.{MustMatchers, WordSpec}
 
 class HTTPRoutingSpec extends WordSpec with MustMatchers {
   protected implicit val formats = Serialization.formats(NoTypeHints)
@@ -211,9 +208,9 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
 
       val req = json.extract[LambdaHTTPRequest]
 
-      val server = new TestHTTPServer(req, null)
-
-      val response = server.routeRequest()
+      val server = new TestHTTPServer
+      val handler = server.newHandler
+      val response = handler.routeRequest(req, null)
 
       response must have (
         'statusCode (200),
@@ -227,9 +224,9 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
 
       val req = json.extract[LambdaHTTPRequest]
 
-      val server = new TestHTTPServer(req, null)
-
-      val response = server.routeRequest()
+      val server = new TestHTTPServer
+      val handler = server.newHandler
+      val response = handler.routeRequest(req, null)
 
       response must have (
         'statusCode (200),
@@ -243,35 +240,35 @@ class HTTPRoutingSpec extends WordSpec with MustMatchers {
 @LambdaHTTPApi
 class TestHTTPServer {
 
-  get("/quaich-http-demo/users/{username}/foo/{bar}") {
+  get("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext: LambdaRequestContext =>
     complete("OK")
   }
 
-  head("/quaich-http-demo/users/{username}/foo/{bar}") {
+  head("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext: LambdaRequestContext =>
     complete(HTTPStatus.OK)
   }
 
-  options("/quaich-http-demo/users/{username}/foo/{bar}") {
+  options("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext: LambdaRequestContext =>
     complete(HTTPStatus.ImATeapot)
   }
 
-  delete("/quaich-http-demo/users/{username}/foo/{bar}") {
+  delete("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext: LambdaRequestContext =>
     complete("OK")
   }
 
-  post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
-    println(s"Post Body: $body")
+  post[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext: LambdaRequestBody[TestObject] =>
+    println(s"Post Body: ${requestContext.body}")
     complete(200)
   }
 
-  put[TestObject]("/quaich-http-demo/users/{username}") { body ⇒
-    println(s"Username: ${request.pathParameters("username")}")
+  put[TestObject]("/quaich-http-demo/users/{username}") { requestContext: LambdaRequestBody[TestObject] =>
+    println(s"Username: ${requestContext.request.pathParameters("username")}")
     val response = TestObject("OMG", "WTF")
     complete(response)
   }
 
-  patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { body ⇒
-    println(s"Patch Body: $body")
+  patch[TestObject]("/quaich-http-demo/users/{username}/foo/{bar}") { requestContext: LambdaRequestBody[TestObject] =>
+    println(s"Patch Body: ${requestContext.body}")
     complete("OK")
   }
 }
